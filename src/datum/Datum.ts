@@ -2,6 +2,8 @@ import { nullish } from '../utils'
 
 type Subscriber = () => void
 
+// TODO: Action function that combines all setter updates?
+
 /**
  * An atomic state piece that allows subscribing to changes and tracks
  * dependent Datums
@@ -12,19 +14,17 @@ export class Datum<T> {
   constructor(
     protected _value: T | (() => T),
     private setter?: (newValue: T) => void
-  ) {}
+  ) {
+    this.registerDependencies()
+  }
 
   // TODO: Memoize?
   get = () => {
     const caller = Datum.context.at(-1)
     if (caller) this._dependents.add(caller)
-    if (this._value instanceof Function) {
-      Datum.context.push(this)
-      const value = this._value()
-      Datum.context.pop()
-      return value
-    }
-    return this._value
+    const value = this._value instanceof Function ? this._value() : this._value
+    this._previousValue = value
+    return value
   }
 
   set = (value: T | ((currentValue: T) => T)) => {
@@ -41,7 +41,7 @@ export class Datum<T> {
     } else {
       this._value = newValue
     }
-    if (currentValue !== newValue) this.updateSubscribers()
+    this.updateSubscribers()
   }
 
   subscribe = (subscriber: Subscriber) => {
@@ -57,20 +57,35 @@ export class Datum<T> {
 
   protected _subscribers = new Set<Subscriber>()
 
-  protected getAllSubscribers = () => {
-    const allSubscribers = [...this._subscribers]
-    this._dependents.forEach(dependent =>
-      allSubscribers.push(...dependent.getAllSubscribers())
-    )
+  protected _previousValue: T | undefined
+
+  protected getSubscribersToUpdate = () => {
+    const allSubscribers = []
+    if (this._previousValue !== this.get()) {
+      allSubscribers.push(...this._subscribers)
+      this._dependents.forEach(dependent => {
+        allSubscribers.push(...dependent.getSubscribersToUpdate())
+      })
+    }
+
     return new Set(allSubscribers)
   }
 
   protected updateSubscribers() {
-    const allSubscribers = this.getAllSubscribers()
+    const allSubscribers = this.getSubscribersToUpdate()
     allSubscribers.forEach(subscriber => subscriber())
+  }
+
+  protected registerDependencies() {
+    if (this._value instanceof Function) {
+      Datum.context.push(this)
+      this._previousValue = this._value()
+      Datum.context.pop()
+    }
   }
 }
 
+// TODO: Move
 export const persistedDatum = <T>(key: string, defaultValue: T) =>
   new Datum(
     () => {
