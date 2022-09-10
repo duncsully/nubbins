@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { ReactComponent } from './react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
+import { setupHaunted } from './haunted/HauntedComponent'
 
 // TODO:
 // - Vue
@@ -49,3 +50,11 @@ const reactContainer = document.querySelector('#react-app')
 // @ts-ignore
 const root = ReactDOM.createRoot(reactContainer)
 root.render(React.createElement(ReactComponent))
+
+// ============================================================================
+// Haunted
+// ============================================================================
+const componentName = 'haunted-component'
+setupHaunted(componentName)
+const hauntedComponent = document.createElement(componentName)
+document.querySelector('#haunted-app')?.append(hauntedComponent)

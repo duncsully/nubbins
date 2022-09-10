@@ -1,6 +1,6 @@
 import { nullish } from '../utils'
 
-type Subscriber = () => void
+type Subscriber = (...args: any) => void
 
 // TODO: Action function that combines all setter updates?
 
