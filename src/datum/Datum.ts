@@ -1,6 +1,6 @@
 import { nullish } from '../utils'
 
-type Subscriber = (...args: any) => void
+type Subscriber<T> = (value: T) => void
 
 // TODO: Action function that combines all setter updates?
 
@@ -22,7 +22,7 @@ export class Datum<T> {
   get = () => {
     const caller = Datum.context.at(-1)
     if (caller) this._dependents.add(caller)
-    const value = this._value instanceof Function ? this._value() : this._value
+    const value = this.getValue()
     this._previousValue = value
     return value
   }
@@ -32,6 +32,7 @@ export class Datum<T> {
       console.warn('No setter was defined for Datum with getter', this)
       return
     }
+    // TODO: Investigate using .getValue
     const currentValue = this.get()
 
     const newValue = value instanceof Function ? value(currentValue) : value
@@ -44,36 +45,39 @@ export class Datum<T> {
     this.updateSubscribers()
   }
 
-  subscribe = (subscriber: Subscriber) => {
+  subscribe = (subscriber: Subscriber<T>) => {
     this._subscribers.add(subscriber)
     return () => this.unsubscribe(subscriber)
   }
 
-  unsubscribe = (updateHandler: Subscriber) => {
+  unsubscribe = (updateHandler: Subscriber<T>) => {
     this._subscribers.delete(updateHandler)
   }
 
   protected _dependents = new Set<Datum<any>>()
 
-  protected _subscribers = new Set<Subscriber>()
+  protected _subscribers = new Set<Subscriber<T>>()
 
   protected _previousValue: T | undefined
 
-  protected getSubscribersToUpdate = () => {
-    const allSubscribers = []
-    if (this._previousValue !== this.get()) {
-      allSubscribers.push(...this._subscribers)
+  protected getAllUpdates = () => {
+    const allSubscribers: (() => void)[] = []
+    const value = this.getValue()
+    if (this._previousValue !== value) {
+      this._subscribers.forEach(subscriber =>
+        allSubscribers.push(() => subscriber(value))
+      )
       this._dependents.forEach(dependent => {
-        allSubscribers.push(...dependent.getSubscribersToUpdate())
+        allSubscribers.push(...dependent.getAllUpdates())
       })
     }
 
-    return new Set(allSubscribers)
+    return allSubscribers
   }
 
   protected updateSubscribers() {
-    const allSubscribers = this.getSubscribersToUpdate()
-    allSubscribers.forEach(subscriber => subscriber())
+    const updates = this.getAllUpdates()
+    updates.forEach(update => update())
   }
 
   protected registerDependencies() {
@@ -82,6 +86,10 @@ export class Datum<T> {
       this._previousValue = this._value()
       Datum.context.pop()
     }
+  }
+
+  protected getValue() {
+    return this._value instanceof Function ? this._value() : this._value
   }
 }
 

@@ -61,8 +61,8 @@ describe('Datum', () => {
       datum.subscribe(subscriber2)
       datum.set(2)
 
-      expect(subscriber1).toHaveBeenCalled()
-      expect(subscriber2).toHaveBeenCalled()
+      expect(subscriber1).toHaveBeenCalledWith(2)
+      expect(subscriber2).toHaveBeenCalledWith(2)
     })
 
     it('does not call all callbacks if value did not change', () => {
@@ -79,15 +79,17 @@ describe('Datum', () => {
   describe('subscribe + get + set', () => {
     it('updates subscribers for datum dependent on other datum (and only once per subscriber)', () => {
       const datum = new Datum(1)
-      const squared = new Datum(() => datum.get() ^ 2)
-      const cubed = new Datum(() => datum.get() ^ 3)
+      const squared = new Datum(() => datum.get() ** 2)
+      const cubed = new Datum(() => datum.get() ** 3)
 
       const subscriber = jest.fn()
       squared.subscribe(subscriber)
       cubed.subscribe(subscriber)
       datum.set(2)
 
-      expect(subscriber).toHaveBeenCalledTimes(1)
+      expect(subscriber).toHaveBeenCalledTimes(2)
+      expect(subscriber).toHaveBeenNthCalledWith(1, 4)
+      expect(subscriber).toHaveBeenNthCalledWith(2, 8)
     })
 
     it('does not update if dependent datum does not change value', () => {
