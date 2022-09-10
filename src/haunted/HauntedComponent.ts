@@ -6,7 +6,7 @@ const HauntedComponent = () => {
   const [count, setCount] = useDatum(counter)
   const [double] = useDatum(doubled)
 
-  const handleChange: Parameters<Window['addEventListener']>[1] = e =>
+  const handleChange = (e: Event) =>
     setCount((e?.target as HTMLInputElement).valueAsNumber)
 
   return html`

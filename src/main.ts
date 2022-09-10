@@ -4,10 +4,10 @@ import { ReactComponent } from './react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
 import { setupHaunted } from './haunted/HauntedComponent'
+import './lit/LitComponent'
 
 // TODO:
 // - Vue
-// - Lit
 // - Svelte
 // - Angular?
 // - Wrap everything in updating border
@@ -17,6 +17,12 @@ import { setupHaunted } from './haunted/HauntedComponent'
 // Vanilla
 // ============================================================================
 const setupVanilla = () => {
+  const vanillaContainer = document.querySelector('#vanilla-app')
+  vanillaContainer!.innerHTML = `
+        <h2>Vanilla</h2>
+        <input id="vanilla-input" type="number"/>
+        <p>Doubled: <span id="vanilla-doubled"></span></p>
+    `
   const vanillaInput = document.querySelector(
     '#vanilla-input'
   ) as HTMLInputElement
@@ -58,3 +64,10 @@ const componentName = 'haunted-component'
 setupHaunted(componentName)
 const hauntedComponent = document.createElement(componentName)
 document.querySelector('#haunted-app')?.append(hauntedComponent)
+
+// ============================================================================
+// Lit
+// ============================================================================
+const litContainer = document.querySelector('#lit-app')
+const litComponent = document.createElement('lit-component')
+litContainer?.append(litComponent)
