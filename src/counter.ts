@@ -1,9 +1,5 @@
-export function setupCounter(element: HTMLButtonElement) {
-  let counter = 0
-  const setCounter = (count: number) => {
-    counter = count
-    element.innerHTML = `count is ${counter}`
-  }
-  element.addEventListener('click', () => setCounter(++counter))
-  setCounter(0)
-}
+import { Datum } from './datum'
+
+export const counter = new Datum(0)
+
+export const doubled = new Datum(() => counter.get() * 2)
