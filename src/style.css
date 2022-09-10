@@ -42,6 +42,8 @@ h1 {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  gap: 3rem;
 }
 
 .logo {
