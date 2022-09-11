@@ -45,9 +45,24 @@ export class Datum<T> {
     this.updateSubscribers()
   }
 
-  subscribe = (subscriber: Subscriber<T>) => {
+  /**
+   * Observes for changes without immediately calling subscriber with current value
+   * @param subscriber
+   * @returns
+   */
+  observe = (subscriber: Subscriber<T>) => {
     this._subscribers.add(subscriber)
     return () => this.unsubscribe(subscriber)
+  }
+
+  /**
+   * Observes for changes and immediately calls subscriber with current value
+   * @param subscriber
+   * @returns
+   */
+  subscribe = (subscriber: Subscriber<T>) => {
+    subscriber(this.get())
+    return this.observe(subscriber)
   }
 
   unsubscribe = (updateHandler: Subscriber<T>) => {

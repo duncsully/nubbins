@@ -15,7 +15,7 @@ export class DatumController<T> implements ReactiveController {
   }
 
   hostConnected() {
-    this._datum.subscribe(this.requestUpdate)
+    this._datum.observe(this.requestUpdate)
   }
 
   hostDisconnected() {

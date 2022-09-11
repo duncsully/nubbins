@@ -51,14 +51,14 @@ describe('Datum', () => {
     })
   })
 
-  describe('subscribe + set', () => {
+  describe('observe + set', () => {
     it('calls all callbacks provided to subscribe method if value changed', () => {
       const datum = new Datum(1)
 
       const subscriber1 = jest.fn()
-      datum.subscribe(subscriber1)
+      datum.observe(subscriber1)
       const subscriber2 = jest.fn()
-      datum.subscribe(subscriber2)
+      datum.observe(subscriber2)
       datum.set(2)
 
       expect(subscriber1).toHaveBeenCalledWith(2)
@@ -69,22 +69,22 @@ describe('Datum', () => {
       const datum = new Datum(1)
 
       const subscriber = jest.fn()
-      datum.subscribe(subscriber)
+      datum.observe(subscriber)
       datum.set(1)
 
       expect(subscriber).not.toHaveBeenCalled()
     })
   })
 
-  describe('subscribe + get + set', () => {
-    it('updates subscribers for datum dependent on other datum (and only once per subscriber)', () => {
+  describe('observe + get + set', () => {
+    it('updates subscribers for datum dependent on other datum', () => {
       const datum = new Datum(1)
       const squared = new Datum(() => datum.get() ** 2)
       const cubed = new Datum(() => datum.get() ** 3)
 
       const subscriber = jest.fn()
-      squared.subscribe(subscriber)
-      cubed.subscribe(subscriber)
+      squared.observe(subscriber)
+      cubed.observe(subscriber)
       datum.set(2)
 
       expect(subscriber).toHaveBeenCalledTimes(2)
@@ -98,9 +98,9 @@ describe('Datum', () => {
       const doubledFlooredDatum = new Datum(() => flooredDatum.get() * 2)
 
       const flooredSubscriber = jest.fn()
-      flooredDatum.subscribe(flooredSubscriber)
+      flooredDatum.observe(flooredSubscriber)
       const doubledFlooredSubscriber = jest.fn()
-      doubledFlooredDatum.subscribe(doubledFlooredSubscriber)
+      doubledFlooredDatum.observe(doubledFlooredSubscriber)
       datum.set(1.2)
 
       expect(flooredSubscriber).not.toHaveBeenCalled()
@@ -113,22 +113,39 @@ describe('Datum', () => {
       const datum = new Datum(1)
 
       const subscriber = jest.fn()
-      datum.subscribe(subscriber)
+      datum.observe(subscriber)
       datum.unsubscribe(subscriber)
       datum.set(2)
 
       expect(subscriber).not.toHaveBeenCalled()
     })
 
-    it('is also returned by subscribe method', () => {
+    it('is also returned by observe method', () => {
       const datum = new Datum(1)
 
       const subscriber = jest.fn()
-      const unsubscribe = datum.subscribe(subscriber)
+      const unsubscribe = datum.observe(subscriber)
       unsubscribe()
       datum.set(2)
 
       expect(subscriber).not.toHaveBeenCalled()
+    })
+
+    describe('subscribe', () => {
+      it('calls subscriber immediately with current value', () => {
+        const datum = new Datum(1)
+        const subscriber1 = jest.fn()
+
+        datum.subscribe(subscriber1)
+
+        expect(subscriber1).toHaveBeenCalledWith(1)
+
+        datum.set(2)
+        const subscriber2 = jest.fn()
+        datum.subscribe(subscriber2)
+
+        expect(subscriber2).toHaveBeenCalledWith(2)
+      })
     })
   })
 })

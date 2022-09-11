@@ -10,7 +10,7 @@ import { Datum } from '../datum/'
 } */
 
 export const useDatum = <T>(datum: Datum<T>) => {
-  const state = useSyncExternalStore(datum.subscribe, datum.get)
+  const state = useSyncExternalStore(datum.observe, datum.get)
 
   return [state, datum.set] as const
 }
