@@ -1,14 +1,7 @@
-import { /* useReducer, useEffect, */ useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from 'react'
 import { Datum } from '../datum/'
 
-/* export const useDatum = <T>(datum: Datum<T>) => {
-  const [, rerender] = useReducer(x => x + 1, 0)
-
-  useEffect(() => datum.subscribe(rerender), [datum])
-
-  return [datum.get(), datum.set] as const
-} */
-
+// TODO: Support older React versions without useSyncExternalStore? Use shim?
 export const useDatum = <T>(datum: Datum<T>) => {
   const state = useSyncExternalStore(datum.observe, datum.get)
 
