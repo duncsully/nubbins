@@ -21,5 +21,5 @@ export class LitComponent extends LitElement {
   }
 
   private handleChange = (e: Event) =>
-    this.counter.set((e?.target as HTMLInputElement).valueAsNumber)
+    this.counter.set((e?.currentTarget as HTMLInputElement).valueAsNumber)
 }

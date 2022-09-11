@@ -7,7 +7,7 @@ const HauntedComponent = () => {
   const [double] = useDatum(doubled)
 
   const handleChange = (e: Event) =>
-    setCount((e?.target as HTMLInputElement).valueAsNumber)
+    setCount((e?.currentTarget as HTMLInputElement).valueAsNumber)
 
   return html`
     <section>
