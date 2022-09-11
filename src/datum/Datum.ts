@@ -15,6 +15,7 @@ export class Datum<T> {
     protected _value: T | (() => T),
     private setter?: (newValue: T) => void
   ) {
+    this._lastValueBroadcasted = _value instanceof Function ? _value() : _value
     this.registerDependencies()
   }
 
@@ -22,9 +23,7 @@ export class Datum<T> {
   get = () => {
     const caller = Datum.context.at(-1)
     if (caller) this._dependents.add(caller)
-    const value = this.getValue()
-    this._previousValue = value
-    return value
+    return this.getValue()
   }
 
   set = (value: T | ((currentValue: T) => T)) => {
@@ -33,7 +32,7 @@ export class Datum<T> {
       return
     }
     // TODO: Investigate using .getValue
-    const currentValue = this.get()
+    const currentValue = this.getValue()
 
     const newValue = value instanceof Function ? value(currentValue) : value
 
@@ -61,7 +60,7 @@ export class Datum<T> {
    * @returns
    */
   subscribe = (subscriber: Subscriber<T>) => {
-    subscriber(this.get())
+    subscriber(this.getValue())
     return this.observe(subscriber)
   }
 
@@ -73,18 +72,19 @@ export class Datum<T> {
 
   protected _subscribers = new Set<Subscriber<T>>()
 
-  protected _previousValue: T | undefined
+  protected _lastValueBroadcasted: T | undefined
 
   protected getAllUpdates = () => {
     const allSubscribers: (() => void)[] = []
     const value = this.getValue()
-    if (this._previousValue !== value) {
+    if (this._lastValueBroadcasted !== value) {
       this._subscribers.forEach(subscriber =>
         allSubscribers.push(() => subscriber(value))
       )
       this._dependents.forEach(dependent => {
         allSubscribers.push(...dependent.getAllUpdates())
       })
+      this._lastValueBroadcasted = value
     }
 
     return allSubscribers
@@ -98,7 +98,7 @@ export class Datum<T> {
   protected registerDependencies() {
     if (this._value instanceof Function) {
       Datum.context.push(this)
-      this._previousValue = this._value()
+      this._value()
       Datum.context.pop()
     }
   }
