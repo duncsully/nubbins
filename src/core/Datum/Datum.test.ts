@@ -130,22 +130,55 @@ describe('Datum', () => {
 
       expect(subscriber).not.toHaveBeenCalled()
     })
+  })
 
-    describe('subscribe', () => {
-      it('calls subscriber immediately with current value', () => {
-        const datum = new Datum(1)
-        const subscriber1 = jest.fn()
+  describe('subscribe', () => {
+    it('calls subscriber immediately with current value', () => {
+      const datum = new Datum(1)
+      const subscriber1 = jest.fn()
 
-        datum.subscribe(subscriber1)
+      datum.subscribe(subscriber1)
 
-        expect(subscriber1).toHaveBeenCalledWith(1)
+      expect(subscriber1).toHaveBeenCalledWith(1)
 
-        datum.set(2)
-        const subscriber2 = jest.fn()
-        datum.subscribe(subscriber2)
+      datum.set(2)
+      const subscriber2 = jest.fn()
+      datum.subscribe(subscriber2)
 
-        expect(subscriber2).toHaveBeenCalledWith(2)
-      })
+      expect(subscriber2).toHaveBeenCalledWith(2)
     })
+  })
+
+  describe('action', () => {
+    it('defers subscription updates until after action finishes', () => {
+      const datum1 = new Datum(1)
+      const datum2 = new Datum('hi')
+      const subscriber = jest.fn()
+      datum1.observe(subscriber)
+      datum2.observe(subscriber)
+
+      Datum.action(() => {
+        datum1.set(2)
+        expect(subscriber).not.toHaveBeenCalled()
+        datum2.set('yo')
+      })
+
+      expect(subscriber).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  it('will not update dependent datum if its value after all operations has not changed', () => {
+    const widthDatum = new Datum(1)
+    const heightDatum = new Datum(10)
+    const areaDatum = new Datum(() => widthDatum.get() * heightDatum.get())
+    const subscriber = jest.fn()
+    areaDatum.observe(subscriber)
+
+    Datum.action(() => {
+      widthDatum.set(2)
+      heightDatum.set(5)
+    })
+
+    expect(subscriber).not.toHaveBeenCalled()
   })
 })

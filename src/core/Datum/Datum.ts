@@ -10,6 +10,19 @@ type Subscriber<T> = (value: T) => void
  */
 export class Datum<T> {
   static context: Datum<any>[] = []
+  static batchedUpdateChecks: undefined | Set<Datum<any>>
+  /**
+   * All subscription updates will be deferred until after passed action has run,
+   * preventing a subscriber from being updated multiple times for multiple
+   * datum write operations
+   * @param action
+   */
+  static action(action: () => void) {
+    Datum.batchedUpdateChecks = new Set()
+    action()
+    Datum.batchedUpdateChecks?.forEach(datum => datum.updateSubscribers())
+    Datum.batchedUpdateChecks = undefined
+  }
 
   constructor(
     protected _value: T | (() => T),
@@ -41,7 +54,11 @@ export class Datum<T> {
     } else {
       this._value = newValue
     }
-    this.updateSubscribers()
+    if (!Datum.batchedUpdateChecks) {
+      this.updateSubscribers()
+    } else {
+      Datum.batchedUpdateChecks.add(this)
+    }
   }
 
   /**
