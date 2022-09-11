@@ -5,13 +5,17 @@ import React from 'react'
 import { counter, doubled } from './counter'
 import { setupHaunted } from './haunted/HauntedComponent'
 import './lit/LitComponent'
+import SvelteComponent from './svelte/SvelteComponent.svelte'
 
 // TODO:
+// - Solid - investigate `from`
 // - Vue
 // - Svelte
 // - Angular?
+// - Other FE libraries?
 // - Wrap everything in updating border
 // - search and persisted examples
+// - async datum?
 
 // ============================================================================
 // Vanilla
@@ -30,13 +34,13 @@ const setupVanilla = () => {
 
   vanillaInput.valueAsNumber = counter.get()
 
-  counter.subscribe(() => {
+  counter.observe(() => {
     if (vanillaInput) {
       vanillaInput.valueAsNumber = counter.get()
     }
   })
 
-  doubled.subscribe(() => {
+  doubled.observe(() => {
     if (vanillaDoubled) {
       vanillaDoubled.textContent = doubled.get().toString()
     }
@@ -71,3 +75,9 @@ document.querySelector('#haunted-app')?.append(hauntedComponent)
 const litContainer = document.querySelector('#lit-app')
 const litComponent = document.createElement('lit-component')
 litContainer?.append(litComponent)
+
+// ============================================================================
+// Svelte
+// ============================================================================
+const svelteContainer = document.querySelector('#svelte-app')
+new SvelteComponent({ target: svelteContainer! })
