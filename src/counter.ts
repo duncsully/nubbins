@@ -1,4 +1,4 @@
-import { Datum } from './datum'
+import { Datum } from './core'
 
 export const counter = new Datum(0)
 

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { Datum } from '../datum/'
+import { Datum } from '../core'
 
 // TODO: Support older React versions without useSyncExternalStore? Use shim?
 export const useDatum = <T>(datum: Datum<T>) => {

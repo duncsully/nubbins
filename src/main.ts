@@ -9,6 +9,7 @@ import SvelteComponent from './svelte/SvelteComponent.svelte'
 
 // TODO:
 // - Solid - investigate `from`
+// - Preact
 // - Vue
 // - Svelte
 // - Angular?
@@ -16,6 +17,7 @@ import SvelteComponent from './svelte/SvelteComponent.svelte'
 // - Wrap everything in updating border
 // - search and persisted examples
 // - async datum?
+// - subscribe to datumStore?
 
 // ============================================================================
 // Vanilla

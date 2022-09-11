@@ -1,5 +1,5 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit'
-import { Datum } from '../datum'
+import { Datum } from '../core'
 
 // TODO: Improve ergonomics? Turn into decorator?
 export class DatumController<T> implements ReactiveController {

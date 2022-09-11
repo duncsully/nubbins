@@ -1,4 +1,4 @@
-import { nullish } from '../utils'
+import { nullish } from '../../utils'
 
 type Subscriber<T> = (value: T) => void
 
