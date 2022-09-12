@@ -51,6 +51,22 @@ describe('Datum', () => {
     })
   })
 
+  describe('value', () => {
+    it('works like .get() when read', () => {
+      const datum = new Datum(5)
+
+      expect(datum.value).toBe(5)
+    })
+
+    it('works like .set() when set', () => {
+      const datum = new Datum(true)
+
+      datum.value = false
+
+      expect(datum.value).toBe(false)
+    })
+  })
+
   describe('observe + set', () => {
     it('calls all callbacks provided to subscribe method if value changed', () => {
       const datum = new Datum(1)

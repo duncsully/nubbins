@@ -2,6 +2,7 @@ import { nullish } from '../../utils'
 import { Subscriber } from './Subscriber'
 
 // TODO: Automatically batch updates without Datum.action?
+// TODO: Better type inference: no set method + value setter if getter without setter passed?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -30,6 +31,13 @@ export class Datum<T> {
   ) {
     this._lastValueBroadcasted = _value instanceof Function ? _value() : _value
     this.registerDependencies()
+  }
+
+  get value() {
+    return this.get()
+  }
+  set value(newValue) {
+    this.set(newValue)
   }
 
   // TODO: Memoize?
