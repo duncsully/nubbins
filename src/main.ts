@@ -11,13 +11,11 @@ import SvelteComponent from './svelte/SvelteComponent.svelte'
 // - Solid - investigate `from`
 // - Preact
 // - Vue
-// - Svelte
 // - Angular?
 // - Other FE libraries?
-// - Wrap everything in updating border
 // - search and persisted examples
 // - async datum?
-// - subscribe to datumStore?
+// - object and array datum?
 
 // ============================================================================
 // Vanilla
