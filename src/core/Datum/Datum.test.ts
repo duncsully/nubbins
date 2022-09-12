@@ -35,7 +35,7 @@ describe('Datum', () => {
     it('logs warning if used on getter Datum without setter', () => {
       const datum = new Datum(() => 1)
 
-      jest.spyOn(console, 'warn')
+      jest.spyOn(console, 'warn').mockImplementation(() => null)
       datum.set(2)
 
       expect(console.warn).toHaveBeenCalled()
