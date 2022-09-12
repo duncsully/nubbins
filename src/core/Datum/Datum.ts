@@ -1,8 +1,7 @@
 import { nullish } from '../../utils'
+import { Subscriber } from './Subscriber'
 
-type Subscriber<T> = (value: T) => void
-
-// TODO: Action function that combines all setter updates?
+// TODO: Automatically batch updates without Datum.action?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -19,6 +18,7 @@ export class Datum<T> {
    */
   static action(action: () => void) {
     Datum.batchedUpdateChecks = new Set()
+    // TODO: forward return value?
     action()
     Datum.batchedUpdateChecks?.forEach(datum => datum.updateSubscribers())
     Datum.batchedUpdateChecks = undefined
