@@ -32,17 +32,15 @@ const setupVanilla = () => {
   ) as HTMLInputElement
   const vanillaDoubled = document.querySelector('#vanilla-doubled')
 
-  vanillaInput.valueAsNumber = counter.get()
-
-  counter.observe(() => {
+  counter.subscribe(value => {
     if (vanillaInput) {
-      vanillaInput.valueAsNumber = counter.get()
+      vanillaInput.valueAsNumber = value
     }
   })
 
-  doubled.observe(() => {
+  doubled.subscribe(value => {
     if (vanillaDoubled) {
-      vanillaDoubled.textContent = doubled.get().toString()
+      vanillaDoubled.textContent = value.toString()
     }
   })
 
