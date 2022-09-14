@@ -6,6 +6,8 @@ import { counter, doubled } from './counter'
 import { setupHaunted } from './haunted/HauntedComponent'
 import './lit/LitComponent'
 import SvelteComponent from './svelte/SvelteComponent.svelte'
+import { render as renderSolid } from 'solid-js/web'
+import { SolidComponent } from './solid/SolidComponent'
 
 // TODO:
 // - Solid - investigate `from`
@@ -79,3 +81,9 @@ litContainer?.append(litComponent)
 // ============================================================================
 const svelteContainer = document.querySelector('#svelte-app')
 new SvelteComponent({ target: svelteContainer! })
+
+// ============================================================================
+// Solid
+// ============================================================================
+const solidContainer = document.querySelector('#solid-app')
+renderSolid(SolidComponent, solidContainer!)
