@@ -14,7 +14,6 @@ import { createApp as createVueApp } from 'vue'
 import VueComponent from './vue/VueComponent.vue'
 
 // TODO:
-// - Switch all examples to use onInput
 // - Preact
 // - Angular?
 // - Other FE libraries?
@@ -49,8 +48,8 @@ const setupVanilla = () => {
     }
   })
 
-  vanillaInput?.addEventListener('change', e =>
-    counter.set((e?.target as HTMLInputElement).valueAsNumber)
+  vanillaInput?.addEventListener('input', e =>
+    counter.set((e?.currentTarget as HTMLInputElement).valueAsNumber)
   )
 }
 setupVanilla()

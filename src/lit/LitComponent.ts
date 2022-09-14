@@ -14,7 +14,7 @@ export class LitComponent extends LitElement {
       <input
         type="number"
         .value=${this.counter.get()}
-        @change=${this.handleChange}
+        @input=${this.handleChange}
       />
       <p>Doubled: ${this.doubled.get()}</p>
     </section>`

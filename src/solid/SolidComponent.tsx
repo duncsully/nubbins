@@ -11,7 +11,7 @@ export const SolidComponent = () => {
     <input
       type="number"
       value=${count}
-      onChange=${(e: Event) =>
+      onInput=${(e: Event) =>
         setCount((e.currentTarget as HTMLInputElement).valueAsNumber)}
     />
     <p>Doubled: ${double}</p>

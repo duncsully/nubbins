@@ -12,7 +12,7 @@ const HauntedComponent = () => {
   return html`
     <section>
       <h2>Haunted</h2>
-      <input type="number" .value=${count} @change=${handleChange} />
+      <input type="number" .value=${count} @input=${handleChange} />
       <p>Doubled: ${double}</p>
     </section>
   `
