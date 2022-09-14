@@ -11,7 +11,7 @@ export const ReactComponent = () => {
       <input
         type="number"
         value={count}
-        onChange={e => setCount(e.target.valueAsNumber)}
+        onChange={e => setCount(e.currentTarget.valueAsNumber)}
       />
       <p>Doubled: {double}</p>
     </section>
