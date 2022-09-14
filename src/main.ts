@@ -8,11 +8,14 @@ import './lit/LitComponent'
 import SvelteComponent from './svelte/SvelteComponent.svelte'
 import { render as renderSolid } from 'solid-js/web'
 import { SolidComponent } from './solid/SolidComponent'
+import { createApp as createVueApp } from 'vue'
+// *sigh* do I care enough?
+// @ts-ignore
+import VueComponent from './vue/VueComponent.vue'
 
 // TODO:
-// - Solid - investigate `from`
+// - Switch all examples to use onInput
 // - Preact
-// - Vue
 // - Angular?
 // - Other FE libraries?
 // - search and persisted examples
@@ -87,3 +90,8 @@ new SvelteComponent({ target: svelteContainer! })
 // ============================================================================
 const solidContainer = document.querySelector('#solid-app')
 renderSolid(SolidComponent, solidContainer!)
+
+// ============================================================================
+// Vue
+// ============================================================================
+createVueApp(VueComponent).mount('#vue-app')
