@@ -1,8 +1,10 @@
-import { nullish } from '../../utils'
+import { nullish, notEqual } from '../../utils'
 import { Subscriber } from './Subscriber'
 
 // TODO: Automatically batch updates without Datum.action?
 // TODO: Better type inference: no set method + value setter if getter without setter passed?
+// TODO: Track first value? Reset option?
+// TODO: Allow nesting actions without flushing until the very top level finishes
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -27,7 +29,11 @@ export class Datum<T> {
 
   constructor(
     protected _value: T | (() => T),
-    private setter?: (newValue: T) => void
+    // TODO: Make setter an option?
+    private setter?: (newValue: T) => void,
+    private _options: {
+      hasChanged?(currentValue: T | undefined, newValue: T): boolean
+    } = {}
   ) {
     this._lastValueBroadcasted = _value instanceof Function ? _value() : _value
     this.registerDependencies()
@@ -52,7 +58,6 @@ export class Datum<T> {
       console.warn('No setter was defined for Datum with getter', this)
       return
     }
-    // TODO: Investigate using .getValue
     const currentValue = this.getValue()
 
     const newValue = value instanceof Function ? value(currentValue) : value
@@ -85,7 +90,9 @@ export class Datum<T> {
    * @returns
    */
   subscribe = (subscriber: Subscriber<T>) => {
-    subscriber(this.getValue())
+    const value = this.getValue()
+    subscriber(value)
+    this._lastValueBroadcasted = value
     return this.observe(subscriber)
   }
 
@@ -100,9 +107,11 @@ export class Datum<T> {
   protected _lastValueBroadcasted: T | undefined
 
   protected getAllUpdates = () => {
+    const { hasChanged = notEqual } = this._options
     const allSubscribers: (() => void)[] = []
     const value = this.getValue()
-    if (this._lastValueBroadcasted !== value) {
+
+    if (hasChanged(this._lastValueBroadcasted, value)) {
       this._subscribers.forEach(subscriber =>
         allSubscribers.push(() => subscriber(value))
       )

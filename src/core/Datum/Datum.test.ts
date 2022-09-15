@@ -81,12 +81,25 @@ describe('Datum', () => {
       expect(subscriber2).toHaveBeenCalledWith(2)
     })
 
-    it('does not call all callbacks if value did not change', () => {
+    it('does not call all callbacks if value did not change (using default hasChanged)', () => {
       const datum = new Datum(1)
 
       const subscriber = jest.fn()
       datum.observe(subscriber)
       datum.set(1)
+
+      expect(subscriber).not.toHaveBeenCalled()
+    })
+
+    it('can have change check configured with hasChanged option', () => {
+      const datum = new Datum(['beans', 'chicken'], undefined, {
+        hasChanged: (current, next) =>
+          next.some((value, i) => current?.[i] !== value),
+      })
+
+      const subscriber = jest.fn()
+      datum.observe(subscriber)
+      datum.set(['beans', 'chicken'])
 
       expect(subscriber).not.toHaveBeenCalled()
     })
