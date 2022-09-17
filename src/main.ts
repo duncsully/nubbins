@@ -1,21 +1,22 @@
 import './style.css'
 import ReactDOM from 'react-dom/client'
-import { ReactComponent } from './react/ReactComponent'
+import { ReactComponent } from './react/components/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
-import { setupHaunted } from './haunted/HauntedComponent'
-import './lit/LitComponent'
-import SvelteComponent from './svelte/SvelteComponent.svelte'
+import { setupHaunted } from './haunted/components/HauntedComponent'
+import './lit/components/LitComponent'
+import SvelteComponent from './svelte/components/SvelteComponent.svelte'
 import { render as renderSolid } from 'solid-js/web'
-import { SolidComponent } from './solid/SolidComponent'
+import { SolidComponent } from './solid/components/SolidComponent'
 import { createApp as createVueApp } from 'vue'
 // *sigh* do I care enough?
 // @ts-ignore
-import VueComponent from './vue/VueComponent.vue'
+import VueComponent from './vue/components/VueComponent.vue'
 
 // TODO:
-// - Preact
-// - Angular?
+// - Preact - Support signals and useState
+// - Angular? - Probably not, looks like you would set up a service with a datum
+// and manually subscribe to the datum from within the component
 // - Other FE libraries?
 // - search and persisted examples
 // - async datum?
