@@ -4,13 +4,13 @@ An atom-based state management library that use Datum objects to track individua
 
 ## Use with your favorite frontend libraries
 
-### React / Haunted
+### React / Preact / Haunted
 
-A `useDatum` hook is provided for both libraries. It operates much the same way as the `useState` hook, returning a tuple with the current value of the datum as the first item and the setter for the datum as the second item.
+A `useDatum` hook is provided for these three libraries. It operates much the same way as the `useState` hook, returning a tuple with the current value of the datum as the first item and the setter for the datum as the second item.
 
 ```typescript
 import { someDatum } from './someDatum'
-import { useDatum } from 'datum-js/react' // use datum-js/haunted for the haunted hook
+import { useDatum } from 'datum-js/react' // use datum-js/haunted or datum-js/preact for their respective versions
 
 // ...someComponent
 const [myDatum, setMyDatum] = useDatum(someDatum)
@@ -22,9 +22,31 @@ const doubled = myDatum
 setMyDatum(5)
 ```
 
+# Preact signals
+
+Preact signal support is also provided with the `useDatumSignal` hook. This allows you to read and set a reactive `.value` property, and also leverage Preact's optimizations when passing a signal directly into its templates.
+
+```jsx
+import { someDatum } from './someDatum'
+import { useDatumSignal } from 'datum-js/preact'
+
+const SomeComponent = () => {
+  const myDatum = useDatumSignal(someDatum)
+
+  // read
+  const doubled = myDatum.value
+
+  // write
+  myDatum.value = 5
+
+  // pass signal in directly
+  return <input value={myDatum} />
+}
+```
+
 ### Solid
 
-Very similar to React and Haunted, Solid support is provided via a `datumSignal` utility which converts a provided datum into a Solid signal and returns a tuple with a getter and setter.
+Solid support is provided via a `datumSignal` utility which converts a provided datum into a Solid signal and returns a tuple with a getter and setter.
 
 ```typescript
 import { someDatum } from './someDatum'
@@ -33,7 +55,7 @@ import { datumSignal } from 'datum-js/solid'
 const [myDatum, setMyDatum] = datumSignal(someDatum)
 
 // read
-const doubled = myDatum()
+const doubled = myDatum() * 2
 
 // write
 setMyDatum(5)
@@ -58,6 +80,7 @@ A `datumRef` utility is provided to transform a datum into a Vue ref, which has 
 </script>
 
 <template>
+  <!-- two-way bind -->
   <input v-model="someDatumRef"/>
 </template>
 ```
