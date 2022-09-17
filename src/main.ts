@@ -22,11 +22,18 @@ import { PreactComponent } from './preact/PreactComponent'
 // - async datum?
 // - object and array datum?
 
+const createDivAndAppendToBody = (id: string) => {
+  const div = document.createElement('div')
+  div.id = id
+  document.body.append(div)
+  return div
+}
+
 // ============================================================================
 // Vanilla
 // ============================================================================
 const setupVanilla = () => {
-  const vanillaContainer = document.querySelector('#vanilla-app')
+  const vanillaContainer = createDivAndAppendToBody('vanilla-app')
   vanillaContainer!.innerHTML = `
         <h2>Vanilla</h2>
         <input id="vanilla-input" type="number"/>
@@ -58,7 +65,7 @@ setupVanilla()
 // ============================================================================
 // React
 // ============================================================================
-const reactContainer = document.querySelector('#react-app')
+const reactContainer = createDivAndAppendToBody('react-app')
 // TODO: Figure out why type won't work
 // @ts-ignore
 const root = ReactDOM.createRoot(reactContainer)
@@ -67,7 +74,7 @@ root.render(React.createElement(ReactComponent))
 // ============================================================================
 // Preact
 // ============================================================================
-const preactContainer = document.querySelector('#preact-app')
+const preactContainer = createDivAndAppendToBody('preact-app')
 renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
 
 // ============================================================================
@@ -76,28 +83,28 @@ renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
 const componentName = 'haunted-component'
 setupHaunted(componentName)
 const hauntedComponent = document.createElement(componentName)
-document.querySelector('#haunted-app')?.append(hauntedComponent)
+createDivAndAppendToBody('haunted-app').append(hauntedComponent)
 
 // ============================================================================
 // Lit
 // ============================================================================
-const litContainer = document.querySelector('#lit-app')
+const litContainer = createDivAndAppendToBody('lit-app')
 const litComponent = document.createElement('lit-component')
 litContainer?.append(litComponent)
 
 // ============================================================================
 // Svelte
 // ============================================================================
-const svelteContainer = document.querySelector('#svelte-app')
+const svelteContainer = createDivAndAppendToBody('svelte-app')
 new SvelteComponent({ target: svelteContainer! })
 
 // ============================================================================
 // Solid
 // ============================================================================
-const solidContainer = document.querySelector('#solid-app')
+const solidContainer = createDivAndAppendToBody('solid-app')
 renderSolid(SolidComponent, solidContainer!)
 
 // ============================================================================
 // Vue
 // ============================================================================
-createVueApp(VueComponent).mount('#vue-app')
+createVueApp(VueComponent).mount(createDivAndAppendToBody('vue-app'))
