@@ -4,7 +4,6 @@ import { Subscriber } from './Subscriber'
 // TODO: Automatically batch updates without Datum.action?
 // TODO: Better type inference: no set method + value setter if getter without setter passed?
 // TODO: Track first value? Reset option?
-// TODO: Allow nesting actions without flushing until the very top level finishes
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -20,11 +19,16 @@ export class Datum<T> {
    * @param action
    */
   static action(action: () => void) {
-    Datum.batchedUpdateChecks = new Set()
+    // If there is already a set, this is a nested call, don't flush until we
+    // return to the top level
+    const flush = !Datum.batchedUpdateChecks
+    Datum.batchedUpdateChecks ??= new Set()
     // TODO: forward return value?
     action()
-    Datum.batchedUpdateChecks?.forEach(datum => datum.updateSubscribers())
-    Datum.batchedUpdateChecks = undefined
+    if (flush) {
+      Datum.batchedUpdateChecks?.forEach(datum => datum.updateSubscribers())
+      Datum.batchedUpdateChecks = undefined
+    }
   }
 
   constructor(
@@ -46,7 +50,7 @@ export class Datum<T> {
     this.set(newValue)
   }
 
-  // TODO: Memoize?
+  // TODO: Memoize? - Use lastValueBroadcasted if subscribers?
   get = () => {
     const caller = Datum.context.at(-1)
     if (caller) this._dependents.add(caller)
@@ -172,62 +176,3 @@ export const lastNameDatum = searchDatum('lastName', 'Sullivan')
 export const fullNameDatum = new Datum(() =>
   `${firstNameDatum.get()} ${lastNameDatum.get()}`.trim()
 )
-
-/* const paramData = new WeakMap()
-
-const paramDatum = () => {
-  const datum: Datum<string> = new Datum(() => paramData.get(datum))
-  return datum
-}
-
-const path =
-  (strings: TemplateStringsArray, ...data: Datum<any>[]) =>
-  () => {
-    // TODO: Should /path/ and /path be different?
-    const paramMatcher = '([^/]+)'
-    const regex =
-      '^' +
-      strings.join(paramMatcher) +
-      (data.length === strings.length ? paramMatcher : '') +
-      '$'
-    const result = window.location.pathname.match(new RegExp(regex))
-    if (result) {
-      data.forEach((datum, i) => {
-        paramData.set(datum, result[i + 1])
-      })
-      return true
-    }
-    return false
-  }
-
-const exampleParamDatum = paramDatum()
-
-const testPath = path`/test/${exampleParamDatum}`
-
-console.log(testPath(), exampleParamDatum.get())
-
-interface RouteDef<T> {
-  params: T
-  match: (params: T) => boolean
-  getPath: (params: T) => string
-  goTo: (params: Record<keyof T, any>) => boolean
-}
-
-const getRouteDef = <T extends object>(
-  params: T,
-  pathTemplate: (params: T) => ReturnType<typeof path>
-): RouteDef<T> => ({
-  params,
-  match: params => false,
-  getPath: params => '',
-  goTo: params => false,
-})
-
-const testRoute = getRouteDef(
-  { exampleParamDatum },
-  ({ exampleParamDatum }) => path`/path/${exampleParamDatum}`
-)
-
-const goTo = <T>(route: RouteDef<T>, params: T) => false
-
-testRoute.goTo({ exampleParamDatum: 'yes' }) */

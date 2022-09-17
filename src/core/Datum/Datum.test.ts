@@ -179,7 +179,7 @@ describe('Datum', () => {
   })
 
   describe('action', () => {
-    it('defers subscription updates until after action finishes', () => {
+    it('defers subscription updates until after all actions (nested included) finish', () => {
       const datum1 = new Datum(1)
       const datum2 = new Datum('hi')
       const subscriber = jest.fn()
@@ -187,7 +187,10 @@ describe('Datum', () => {
       datum2.observe(subscriber)
 
       Datum.action(() => {
-        datum1.set(2)
+        Datum.action(() => {
+          datum1.set(2)
+          expect(subscriber).not.toHaveBeenCalled()
+        })
         expect(subscriber).not.toHaveBeenCalled()
         datum2.set('yo')
       })

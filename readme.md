@@ -106,7 +106,7 @@ Conveniently, since Datums follow the store contract of Svelte, you can use them
 
 ## Batching Updates
 
-In cases where you're setting multiple datums at a time, it's highly recommended to wrap your updates in `Datum.action` to reduce unnecessary updates to subscribers. This is especially useful for "computed" or "derived" data.
+In cases where you're setting multiple datums at a time, it's highly recommended to wrap your updates in `Datum.action` to reduce unnecessary updates to subscribers. This is especially useful for "computed" or "derived" data. You can nest actions and the updates won't be made until the top-level action finishes. 
 
 ```typescript
 const width = new Datum(1)
