@@ -12,11 +12,11 @@ import { createApp as createVueApp } from 'vue'
 // *sigh* do I care enough?
 // @ts-ignore
 import VueComponent from './vue/components/VueComponent.vue'
+import { render as renderPreact, html } from 'htm/preact'
+import { PreactComponent } from './preact/PreactComponent'
 
 // TODO:
-// - Preact - Support signals and useState
-// - Angular? - Probably not, looks like you would set up a service with a datum
-// and manually subscribe to the datum from within the component
+// - Add test for FE utilities
 // - Other FE libraries?
 // - search and persisted examples
 // - async datum?
@@ -63,6 +63,12 @@ const reactContainer = document.querySelector('#react-app')
 // @ts-ignore
 const root = ReactDOM.createRoot(reactContainer)
 root.render(React.createElement(ReactComponent))
+
+// ============================================================================
+// Preact
+// ============================================================================
+const preactContainer = document.querySelector('#preact-app')
+renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
 
 // ============================================================================
 // Haunted
