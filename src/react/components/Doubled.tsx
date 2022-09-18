@@ -1,9 +1,9 @@
 import React from 'react'
 import { doubled } from '../../counter'
-import { useDatum } from '../useDatum'
+import { useNubbin } from '../useNubbin'
 
 export const Doubled = () => {
-  const [double] = useDatum(doubled)
+  const [double] = useNubbin(doubled)
 
   return <p>Doubled: {double}</p>
 }

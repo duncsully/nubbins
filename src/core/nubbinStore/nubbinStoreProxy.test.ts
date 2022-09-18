@@ -1,16 +1,16 @@
-import { datumStore } from './datumStore'
-import { datumStoreProxy } from './datumStoreProxy'
+import { nubbinStore } from './nubbinStore'
+import { nubbinStoreProxy } from './nubbinStoreProxy'
 
 // A noop for reading values from a proxy
 const read = (...args: any[]) => args
 
-describe('datumStoreProxy', () => {
-  it('creates proxy for getting and setting datumStore datums', () => {
-    const store = datumStore({
+describe('nubbinStoreProxy', () => {
+  it('creates proxy for getting and setting nubbinStore nubbins', () => {
+    const store = nubbinStore({
       count: 1,
       doubled: () => store.count.get() * 2,
     })
-    const [storeProxy] = datumStoreProxy(store)
+    const [storeProxy] = nubbinStoreProxy(store)
 
     expect(storeProxy.count).toBe(1)
     expect(storeProxy.doubled).toBe(2)
@@ -22,13 +22,13 @@ describe('datumStoreProxy', () => {
   })
 
   it('allows passing subscriber that is only called for read properties', () => {
-    const store = datumStore({
+    const store = nubbinStore({
       count: 1,
       doubled: () => store.count.get() * 2,
       separate: 'hi',
     })
     const subscriber = jest.fn()
-    const [storeProxy] = datumStoreProxy(store, subscriber)
+    const [storeProxy] = nubbinStoreProxy(store, subscriber)
 
     read(storeProxy.doubled)
 
@@ -49,12 +49,12 @@ describe('datumStoreProxy', () => {
   })
 
   it('returns unsubscribe function', () => {
-    const store = datumStore({
+    const store = nubbinStore({
       count: 1,
       doubled: () => store.count.get() * 2,
     })
     const subscriber = jest.fn()
-    const [storeProxy, unsubscribe] = datumStoreProxy(store, subscriber)
+    const [storeProxy, unsubscribe] = nubbinStoreProxy(store, subscriber)
 
     read(storeProxy.count, storeProxy.doubled)
     unsubscribe()

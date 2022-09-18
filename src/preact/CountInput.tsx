@@ -1,9 +1,9 @@
 import { html } from 'htm/preact'
 import { counter } from '../counter'
-import { useDatumSignal } from './useDatumSignal'
+import { useNubbinSignal } from './useNubbinSignal'
 
 export const CountInput = () => {
-  const count = useDatumSignal(counter)
+  const count = useNubbinSignal(counter)
 
   const handleChange = (e: Event) =>
     (count.value = (e?.currentTarget as HTMLInputElement).valueAsNumber)

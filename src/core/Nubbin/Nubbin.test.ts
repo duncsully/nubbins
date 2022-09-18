@@ -1,51 +1,51 @@
-import { Datum } from './Datum'
+import { Nubbin } from './Nubbin'
 
-describe('Datum', () => {
+describe('Nubbin', () => {
   describe('get', () => {
     it('returns the primitive value passed to the constructor', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
-      expect(datum.get()).toBe(1)
+      expect(nubbin.get()).toBe(1)
     })
 
     it('returns return value of function passed to constructor', () => {
-      const datum = new Datum(() => 'hi')
+      const nubbin = new Nubbin(() => 'hi')
 
-      expect(datum.get()).toBe('hi')
+      expect(nubbin.get()).toBe('hi')
     })
   })
 
   describe('set', () => {
     it('sets a new primitive value', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
-      datum.set(2)
+      nubbin.set(2)
 
-      expect(datum.get()).toBe(2)
+      expect(nubbin.get()).toBe(2)
     })
 
     it('sets a new primitive value returned by passed function', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
-      datum.set(value => ++value)
+      nubbin.set(value => ++value)
 
-      expect(datum.get()).toBe(2)
+      expect(nubbin.get()).toBe(2)
     })
 
-    it('logs warning if used on getter Datum without setter', () => {
-      const datum = new Datum(() => 1)
+    it('logs warning if used on getter Nubbin without setter', () => {
+      const nubbin = new Nubbin(() => 1)
 
       jest.spyOn(console, 'warn').mockImplementation(() => null)
-      datum.set(2)
+      nubbin.set(2)
 
       expect(console.warn).toHaveBeenCalled()
     })
 
     it('calls setter if passed to constructor', () => {
       const setter = jest.fn()
-      const datum = new Datum(() => 1, setter)
+      const nubbin = new Nubbin(() => 1, setter)
 
-      datum.set(2)
+      nubbin.set(2)
 
       expect(setter).toHaveBeenCalledWith(2)
     })
@@ -53,107 +53,107 @@ describe('Datum', () => {
 
   describe('value', () => {
     it('works like .get() when read', () => {
-      const datum = new Datum(5)
+      const nubbin = new Nubbin(5)
 
-      expect(datum.value).toBe(5)
+      expect(nubbin.value).toBe(5)
     })
 
     it('works like .set() when set', () => {
-      const datum = new Datum(true)
+      const nubbin = new Nubbin(true)
 
-      datum.value = false
+      nubbin.value = false
 
-      expect(datum.value).toBe(false)
+      expect(nubbin.value).toBe(false)
     })
   })
 
   describe('observe + set', () => {
     it('calls all callbacks provided to subscribe method if value changed', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
       const subscriber1 = jest.fn()
-      datum.observe(subscriber1)
+      nubbin.observe(subscriber1)
       const subscriber2 = jest.fn()
-      datum.observe(subscriber2)
-      datum.set(2)
+      nubbin.observe(subscriber2)
+      nubbin.set(2)
 
       expect(subscriber1).toHaveBeenCalledWith(2)
       expect(subscriber2).toHaveBeenCalledWith(2)
     })
 
     it('does not call all callbacks if value did not change (using default hasChanged)', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
       const subscriber = jest.fn()
-      datum.observe(subscriber)
-      datum.set(1)
+      nubbin.observe(subscriber)
+      nubbin.set(1)
 
       expect(subscriber).not.toHaveBeenCalled()
     })
 
     it('can have change check configured with hasChanged option', () => {
-      const datum = new Datum(['beans', 'chicken'], undefined, {
+      const nubbin = new Nubbin(['beans', 'chicken'], undefined, {
         hasChanged: (current, next) =>
           next.some((value, i) => current?.[i] !== value),
       })
 
       const subscriber = jest.fn()
-      datum.observe(subscriber)
-      datum.set(['beans', 'chicken'])
+      nubbin.observe(subscriber)
+      nubbin.set(['beans', 'chicken'])
 
       expect(subscriber).not.toHaveBeenCalled()
     })
   })
 
   describe('observe + get + set', () => {
-    it('updates subscribers for datum dependent on other datum', () => {
-      const datum = new Datum(1)
-      const squared = new Datum(() => datum.get() ** 2)
-      const cubed = new Datum(() => datum.get() ** 3)
+    it('updates subscribers for nubbin dependent on other nubbin', () => {
+      const nubbin = new Nubbin(1)
+      const squared = new Nubbin(() => nubbin.get() ** 2)
+      const cubed = new Nubbin(() => nubbin.get() ** 3)
 
       const subscriber = jest.fn()
       squared.observe(subscriber)
       cubed.observe(subscriber)
-      datum.set(2)
+      nubbin.set(2)
 
       expect(subscriber).toHaveBeenCalledTimes(2)
       expect(subscriber).toHaveBeenNthCalledWith(1, 4)
       expect(subscriber).toHaveBeenNthCalledWith(2, 8)
     })
 
-    it('does not update if dependent datum does not change value', () => {
-      const datum = new Datum(1.1)
-      const flooredDatum = new Datum(() => Math.floor(datum.get()))
-      const doubledFlooredDatum = new Datum(() => flooredDatum.get() * 2)
+    it('does not update if dependent nubbin does not change value', () => {
+      const nubbin = new Nubbin(1.1)
+      const flooredNubbin = new Nubbin(() => Math.floor(nubbin.get()))
+      const doubledFlooredNubbin = new Nubbin(() => flooredNubbin.get() * 2)
 
       const flooredSubscriber = jest.fn()
-      flooredDatum.observe(flooredSubscriber)
+      flooredNubbin.observe(flooredSubscriber)
       const doubledFlooredSubscriber = jest.fn()
-      doubledFlooredDatum.observe(doubledFlooredSubscriber)
-      datum.set(1.2)
+      doubledFlooredNubbin.observe(doubledFlooredSubscriber)
+      nubbin.set(1.2)
 
       expect(flooredSubscriber).not.toHaveBeenCalled()
       expect(doubledFlooredSubscriber).not.toHaveBeenCalled()
     })
 
     it('does not recompute data until dependents change', () => {
-      const datum = new Datum(['a', 'b', 'c'])
+      const nubbin = new Nubbin(['a', 'b', 'c'])
       const getterCheck = jest.fn()
-      const sortedDatum = new Datum(() => {
+      const sortedNubbin = new Nubbin(() => {
         getterCheck()
-        return [...datum.get()].sort()
+        return [...nubbin.get()].sort()
       })
       getterCheck.mockClear()
 
-      sortedDatum.get()
+      sortedNubbin.get()
 
       expect(getterCheck).not.toHaveBeenCalled()
 
-      sortedDatum.subscribe(jest.fn())
+      sortedNubbin.subscribe(jest.fn())
 
       expect(getterCheck).not.toHaveBeenCalled()
 
-      datum.set([])
+      nubbin.set([])
 
       expect(getterCheck).toHaveBeenCalled()
     })
@@ -161,23 +161,23 @@ describe('Datum', () => {
 
   describe('unsubscribe', () => {
     it('removes passed callback from subscriptions', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
       const subscriber = jest.fn()
-      datum.observe(subscriber)
-      datum.unsubscribe(subscriber)
-      datum.set(2)
+      nubbin.observe(subscriber)
+      nubbin.unsubscribe(subscriber)
+      nubbin.set(2)
 
       expect(subscriber).not.toHaveBeenCalled()
     })
 
     it('is also returned by observe method', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
 
       const subscriber = jest.fn()
-      const unsubscribe = datum.observe(subscriber)
+      const unsubscribe = nubbin.observe(subscriber)
       unsubscribe()
-      datum.set(2)
+      nubbin.set(2)
 
       expect(subscriber).not.toHaveBeenCalled()
     })
@@ -185,16 +185,16 @@ describe('Datum', () => {
 
   describe('subscribe', () => {
     it('calls subscriber immediately with current value', () => {
-      const datum = new Datum(1)
+      const nubbin = new Nubbin(1)
       const subscriber1 = jest.fn()
 
-      datum.subscribe(subscriber1)
+      nubbin.subscribe(subscriber1)
 
       expect(subscriber1).toHaveBeenCalledWith(1)
 
-      datum.set(2)
+      nubbin.set(2)
       const subscriber2 = jest.fn()
-      datum.subscribe(subscriber2)
+      nubbin.subscribe(subscriber2)
 
       expect(subscriber2).toHaveBeenCalledWith(2)
     })
@@ -202,35 +202,35 @@ describe('Datum', () => {
 
   describe('action', () => {
     it('defers subscription updates until after all actions (nested included) finish', () => {
-      const datum1 = new Datum(1)
-      const datum2 = new Datum('hi')
+      const nubbin1 = new Nubbin(1)
+      const nubbin2 = new Nubbin('hi')
       const subscriber = jest.fn()
-      datum1.observe(subscriber)
-      datum2.observe(subscriber)
+      nubbin1.observe(subscriber)
+      nubbin2.observe(subscriber)
 
-      Datum.action(() => {
-        Datum.action(() => {
-          datum1.set(2)
+      Nubbin.action(() => {
+        Nubbin.action(() => {
+          nubbin1.set(2)
           expect(subscriber).not.toHaveBeenCalled()
         })
         expect(subscriber).not.toHaveBeenCalled()
-        datum2.set('yo')
+        nubbin2.set('yo')
       })
 
       expect(subscriber).toHaveBeenCalledTimes(2)
     })
   })
 
-  it('will not update dependent datum if its value after all operations has not changed', () => {
-    const widthDatum = new Datum(1)
-    const heightDatum = new Datum(10)
-    const areaDatum = new Datum(() => widthDatum.get() * heightDatum.get())
+  it('will not update dependent nubbin if its value after all operations has not changed', () => {
+    const widthNubbin = new Nubbin(1)
+    const heightNubbin = new Nubbin(10)
+    const areaNubbin = new Nubbin(() => widthNubbin.get() * heightNubbin.get())
     const subscriber = jest.fn()
-    areaDatum.observe(subscriber)
+    areaNubbin.observe(subscriber)
 
-    Datum.action(() => {
-      widthDatum.set(2)
-      heightDatum.set(5)
+    Nubbin.action(() => {
+      widthNubbin.set(2)
+      heightNubbin.set(5)
     })
 
     expect(subscriber).not.toHaveBeenCalled()

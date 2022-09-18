@@ -1,9 +1,9 @@
 import React from 'react'
 import { counter } from '../../counter'
-import { useDatum } from '../useDatum'
+import { useNubbin } from '../useNubbin'
 
 export const CountInput = () => {
-  const [count, setCount] = useDatum(counter)
+  const [count, setCount] = useNubbin(counter)
 
   return (
     <input

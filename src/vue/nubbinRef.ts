@@ -1,16 +1,16 @@
-import { Datum } from '../core'
+import { Nubbin } from '../core'
 import { customRef } from 'vue'
 
-export const datumRef = <T>(datum: Datum<T>) => {
+export const nubbinRef = <T>(nubbin: Nubbin<T>) => {
   return customRef((track, trigger) => {
-    datum.subscribe(trigger)
+    nubbin.subscribe(trigger)
     return {
       get() {
         track()
-        return datum.get()
+        return nubbin.get()
       },
       set(newValue) {
-        datum.set(newValue)
+        nubbin.set(newValue)
         trigger()
       },
     }

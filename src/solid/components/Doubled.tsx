@@ -1,9 +1,9 @@
 import { doubled } from '../../counter'
-import { datumSignal } from '../datumSignal'
+import { nubbinSignal } from '../nubbinSignal'
 import html from 'solid-js/html'
 
 export const Doubled = () => {
-  const [double] = datumSignal(doubled)
+  const [double] = nubbinSignal(doubled)
 
   return html`<p>Doubled: ${double}</p>`
 }

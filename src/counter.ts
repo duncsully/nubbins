@@ -1,5 +1,5 @@
-import { Datum } from './core'
+import { Nubbin } from './core'
 
-export const counter = new Datum(0)
+export const counter = new Nubbin(0)
 
-export const doubled = new Datum(() => counter.get() * 2)
+export const doubled = new Nubbin(() => counter.get() * 2)

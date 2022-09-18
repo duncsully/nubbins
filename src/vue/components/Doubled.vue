@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { doubled } from '../../counter'
-  import { datumRef } from '../datumRef'
+  import { nubbinRef } from '../nubbinRef'
     
-  const double = datumRef(doubled)
+  const double = nubbinRef(doubled)
 </script>
 
 <template>

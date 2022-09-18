@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { counter } from '../../counter'
-import { DatumController } from '../DatumController'
+import { NubbinController } from '../NubbinController'
 
 @customElement('lit-count-input')
 export class CountInput extends LitElement {
-  counter = new DatumController(this, counter)
+  counter = new NubbinController(this, counter)
 
   render() {
     return html` <input

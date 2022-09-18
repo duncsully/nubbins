@@ -1,9 +1,9 @@
 import { html, virtual } from 'haunted'
 import { counter } from '../../counter'
-import { useDatum } from '../useDatum'
+import { useNubbin } from '../useNubbin'
 
 export const CountInput = virtual(() => {
-  const [count, setCount] = useDatum(counter)
+  const [count, setCount] = useNubbin(counter)
 
   const handleChange = (e: Event) =>
     setCount((e?.currentTarget as HTMLInputElement).valueAsNumber)

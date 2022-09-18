@@ -1,23 +1,23 @@
-import { Datum } from '../core'
+import { Nubbin } from '../core'
 import { effect, useSignal } from '@preact/signals'
 import { useCallback, useEffect } from 'preact/hooks'
 
-export const useDatumSignal = <T>(datum: Datum<T>) => {
-  const signal = useSignal(datum.get())
+export const useNubbinSignal = <T>(nubbin: Nubbin<T>) => {
+  const signal = useSignal(nubbin.get())
   const updateSignal = useCallback((value: T) => (signal.value = value), [])
 
   useEffect(() => {
     const dispose = effect(() => {
       // Would get stuck in an infinite update loop otherwise
-      datum.unsubscribe(updateSignal)
-      datum.set(signal.value)
-      datum.observe(updateSignal)
+      nubbin.unsubscribe(updateSignal)
+      nubbin.set(signal.value)
+      nubbin.observe(updateSignal)
     })
     return () => {
       dispose()
-      datum.unsubscribe(updateSignal)
+      nubbin.unsubscribe(updateSignal)
     }
-  }, [datum])
+  }, [nubbin])
 
   return signal
 }

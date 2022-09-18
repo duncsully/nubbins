@@ -1,16 +1,16 @@
-import { Datum } from '../Datum/Datum'
-import { Subscriber } from '../Datum/Subscriber'
-import { DatumStore } from './datumStore'
+import { Nubbin } from '../Nubbin/Nubbin'
+import { Subscriber } from '../Nubbin/Subscriber'
+import { NubbinStore } from './nubbinStore'
 
 // TODO: Continue testing this. Is this useful?
-export const datumStoreProxy = <T>(
-  datumStore: DatumStore<T>,
+export const nubbinStoreProxy = <T>(
+  nubbinStore: NubbinStore<T>,
   subscriber?: Subscriber<any>
 ) => {
   const unsubscribe = () => {
     if (subscriber) {
-      Object.values<Datum<any>>(datumStore).forEach(datum =>
-        datum.unsubscribe(subscriber)
+      Object.values<Nubbin<any>>(nubbinStore).forEach(nubbin =>
+        nubbin.unsubscribe(subscriber)
       )
     }
   }
@@ -19,16 +19,16 @@ export const datumStoreProxy = <T>(
     {},
     {
       get(_, prop) {
-        const key = prop as keyof DatumStore<T>
-        const datum = datumStore[key]
+        const key = prop as keyof NubbinStore<T>
+        const nubbin = nubbinStore[key]
         if (subscriber && !subscribed.has(key)) {
-          datum.observe(subscriber)
+          nubbin.observe(subscriber)
           subscribed.add(key)
         }
-        return datum.get()
+        return nubbin.get()
       },
       set(_, key, newValue) {
-        datumStore[key as keyof DatumStore<T>].set(newValue)
+        nubbinStore[key as keyof NubbinStore<T>].set(newValue)
         return true
       },
     }

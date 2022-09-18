@@ -19,8 +19,9 @@ import { PreactComponent } from './preact/PreactComponent'
 // - Add test for FE utilities
 // - Other FE libraries?
 // - search and persisted examples
-// - async datum?
-// - object and array datum?
+// - async nubbin?
+// - object and array nubbin?
+// - Add store utilities to other FEs?
 
 const createDivAndAppendToBody = (id: string) => {
   const div = document.createElement('div')

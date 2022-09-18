@@ -1,9 +1,9 @@
 import { html } from 'htm/preact'
 import { doubled } from '../counter'
-import { useDatumSignal } from './useDatumSignal'
+import { useNubbinSignal } from './useNubbinSignal'
 
 export const Doubled = () => {
-  const double = useDatumSignal(doubled)
+  const double = useNubbinSignal(doubled)
 
   return html`<p>Doubled: ${double}</p>`
 }
