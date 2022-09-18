@@ -5,7 +5,6 @@ import { Subscriber } from './Subscriber'
 // I could see reasons for both
 // TODO: Better type inference: no set method + value setter if getter without setter passed?
 // TODO: Track first value? Reset option?
-// TODO: Continue tracking? Conditional getter?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -35,7 +34,8 @@ export class Nubbin<T> {
 
   constructor(
     valueOrGetter: T | (() => T),
-    // TODO: Make setter an option?
+    // TODO: Make setter an option? I think take out the option entirely, require extending
+    // the base class when using Nubbins to access external data e.g. localStorage
     private setter?: (newValue: T) => void,
     private _options: {
       hasChanged?(currentValue: T | undefined, newValue: T): boolean
