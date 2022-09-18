@@ -1,9 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 
 /** Wrap your component's elements in this component to show when your component has rerendered */
-export const UpdatingBorder: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UpdatingBorder = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (ref.current) {
@@ -19,10 +17,7 @@ export const UpdatingBorder: React.FC<{ children: React.ReactNode }> = ({
     <div
       ref={ref}
       style={{
-        border: 'black 2px',
-        borderRadius: '1rem',
-        padding: '1rem',
-        margin: '2rem 0',
+        border: 'black solid 2px',
       }}
     >
       {children}
