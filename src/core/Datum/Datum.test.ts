@@ -135,6 +135,28 @@ describe('Datum', () => {
       expect(flooredSubscriber).not.toHaveBeenCalled()
       expect(doubledFlooredSubscriber).not.toHaveBeenCalled()
     })
+
+    it('does not recompute data until dependents change', () => {
+      const datum = new Datum(['a', 'b', 'c'])
+      const getterCheck = jest.fn()
+      const sortedDatum = new Datum(() => {
+        getterCheck()
+        return [...datum.get()].sort()
+      })
+      getterCheck.mockClear()
+
+      sortedDatum.get()
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedDatum.subscribe(jest.fn())
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      datum.set([])
+
+      expect(getterCheck).toHaveBeenCalled()
+    })
   })
 
   describe('unsubscribe', () => {

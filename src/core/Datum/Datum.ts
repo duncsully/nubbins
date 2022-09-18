@@ -1,9 +1,11 @@
 import { nullish, notEqual } from '../../utils'
 import { Subscriber } from './Subscriber'
 
-// TODO: Automatically batch updates without Datum.action?
+// TODO: Automatically batch updates without Datum.action? Would probably have to be a static option
+// I could see reasons for both
 // TODO: Better type inference: no set method + value setter if getter without setter passed?
 // TODO: Track first value? Reset option?
+// TODO: Lazy getter until gotten/subscribed?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -32,15 +34,21 @@ export class Datum<T> {
   }
 
   constructor(
-    protected _value: T | (() => T),
+    valueOrGetter: T | (() => T),
     // TODO: Make setter an option?
     private setter?: (newValue: T) => void,
     private _options: {
       hasChanged?(currentValue: T | undefined, newValue: T): boolean
     } = {}
   ) {
-    this._lastValueBroadcasted = _value instanceof Function ? _value() : _value
-    this.registerDependencies()
+    if (valueOrGetter instanceof Function) {
+      this.getter = valueOrGetter
+      Datum.context.push(this)
+      this._value = valueOrGetter()
+      Datum.context.pop()
+    } else {
+      this._value = valueOrGetter
+    }
   }
 
   get value() {
@@ -50,20 +58,19 @@ export class Datum<T> {
     this.set(newValue)
   }
 
-  // TODO: Memoize? - Use lastValueBroadcasted if subscribers?
   get = () => {
     const caller = Datum.context.at(-1)
     if (caller) this._dependents.add(caller)
-    return this.getValue()
+    return this._value
   }
 
   set = (value: T | ((currentValue: T) => T)) => {
-    if (this._value instanceof Function && !this.setter) {
+    if (this.getter && !this.setter) {
       console.warn('No setter was defined for Datum with getter', this)
       return
     }
-    const currentValue = this.getValue()
 
+    const currentValue = this._value
     const newValue = value instanceof Function ? value(currentValue) : value
 
     if (this.setter) {
@@ -72,7 +79,7 @@ export class Datum<T> {
       this._value = newValue
     }
     if (!Datum.batchedUpdateChecks) {
-      this.updateSubscribers()
+      this.updateSubscribers(currentValue)
     } else {
       Datum.batchedUpdateChecks.add(this)
     }
@@ -94,9 +101,7 @@ export class Datum<T> {
    * @returns
    */
   subscribe = (subscriber: Subscriber<T>) => {
-    const value = this.getValue()
-    subscriber(value)
-    this._lastValueBroadcasted = value
+    subscriber(this._value)
     return this.observe(subscriber)
   }
 
@@ -104,45 +109,44 @@ export class Datum<T> {
     this._subscribers.delete(updateHandler)
   }
 
+  protected _value: T
+
+  protected getter?: () => T
+
   protected _dependents = new Set<Datum<any>>()
 
   protected _subscribers = new Set<Subscriber<T>>()
 
-  protected _lastValueBroadcasted: T | undefined
-
-  protected getAllUpdates = () => {
+  // TODO: A bit messy, could this be cleaned up?
+  // The idea is that a leaf node will always be a primitive value, so we
+  // need to pass in the previous value to compare. But dependents will always need to
+  // recalculate their values
+  protected getAllUpdates = (...args: [T?]) => {
+    const [previousValueTop] = args
     const { hasChanged = notEqual } = this._options
     const allSubscribers: (() => void)[] = []
-    const value = this.getValue()
+    // This allows us to know if undefined was explicitly passed
+    const oldValue = args.length ? previousValueTop : this._value
+    if (!args.length) {
+      // Dependents will always be computed
+      this._value = this.getter!()
+    }
 
-    if (hasChanged(this._lastValueBroadcasted, value)) {
+    if (hasChanged(oldValue, this._value)) {
       this._subscribers.forEach(subscriber =>
-        allSubscribers.push(() => subscriber(value))
+        allSubscribers.push(() => subscriber(this._value))
       )
       this._dependents.forEach(dependent => {
         allSubscribers.push(...dependent.getAllUpdates())
       })
-      this._lastValueBroadcasted = value
     }
 
     return allSubscribers
   }
 
-  protected updateSubscribers() {
-    const updates = this.getAllUpdates()
+  protected updateSubscribers(previousValueTop?: T) {
+    const updates = this.getAllUpdates(previousValueTop)
     updates.forEach(update => update())
-  }
-
-  protected registerDependencies() {
-    if (this._value instanceof Function) {
-      Datum.context.push(this)
-      this._value()
-      Datum.context.pop()
-    }
-  }
-
-  protected getValue() {
-    return this._value instanceof Function ? this._value() : this._value
   }
 }
 
