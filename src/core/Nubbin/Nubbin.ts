@@ -1,10 +1,6 @@
-import { nullish, notEqual } from '../../utils'
+import { notEqual } from '../../utils'
+import { NubbinOptions } from './NubbinOptions'
 import { Subscriber } from './Subscriber'
-
-// TODO: Automatically batch updates without Nubbin.action? Would probably have to be a static option
-// I could see reasons for both
-// TODO: Better type inference: no set method + value setter if getter without setter passed?
-// TODO: Track first value? Reset option?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -24,7 +20,6 @@ export class Nubbin<T> {
     // return to the top level
     const flush = !Nubbin.batchedUpdateChecks
     Nubbin.batchedUpdateChecks ??= new Set()
-    // TODO: forward return value?
     action()
     if (flush) {
       Nubbin.batchedUpdateChecks?.forEach(nubbin => nubbin.updateSubscribers())
@@ -34,12 +29,7 @@ export class Nubbin<T> {
 
   constructor(
     valueOrGetter: T | (() => T),
-    // TODO: Make setter an option? I think take out the option entirely, require extending
-    // the base class when using Nubbins to access external data e.g. localStorage
-    private setter?: (newValue: T) => void,
-    private _options: {
-      hasChanged?(currentValue: T | undefined, newValue: T): boolean
-    } = {}
+    private _options: NubbinOptions<T> = {}
   ) {
     if (valueOrGetter instanceof Function) {
       this.getter = valueOrGetter
@@ -68,19 +58,15 @@ export class Nubbin<T> {
   }
 
   set = (value: T | ((currentValue: T) => T)) => {
-    if (this.getter && !this.setter) {
-      console.warn('No setter was defined for Nubbin with getter', this)
+    if (this.getter) {
+      console.warn('Attempted setting readonly nubbin:', this)
       return
     }
 
     const currentValue = this._value
     const newValue = value instanceof Function ? value(currentValue) : value
+    this._value = newValue
 
-    if (this.setter) {
-      this.setter(newValue)
-    } else {
-      this._value = newValue
-    }
     if (!Nubbin.batchedUpdateChecks) {
       this.updateSubscribers(currentValue)
     } else {
@@ -171,33 +157,5 @@ export class Nubbin<T> {
   }
 }
 
-// TODO: Move
-export const persistedNubbin = <T>(key: string, defaultValue: T) =>
-  new Nubbin(
-    () => {
-      const existingValue = localStorage.getItem(key)
-      return existingValue ? JSON.parse(existingValue) : defaultValue
-    },
-    newValue => localStorage.setItem(key, JSON.stringify(newValue))
-  )
-
-const searchParams = new URLSearchParams(window.location.search)
-export const searchNubbin = <T>(key: string, defaultValue: T) =>
-  new Nubbin(
-    () => {
-      const existingValue = searchParams.get(key)
-      return existingValue ? JSON.parse(existingValue) : defaultValue
-    },
-    newValue => {
-      if (!nullish(newValue)) searchParams.set(key, JSON.stringify(newValue))
-      else searchParams.delete(key)
-      const { origin, pathname } = window.location
-      window.history.pushState({}, '', `${origin}${pathname}?${searchParams}`)
-    }
-  )
-
-export const firstNameNubbin = persistedNubbin('firstName', 'Jenkins')
-export const lastNameNubbin = searchNubbin('lastName', 'Sullivan')
-export const fullNameNubbin = new Nubbin(() =>
-  `${firstNameNubbin.get()} ${lastNameNubbin.get()}`.trim()
-)
+export const nubbin = (...args: ConstructorParameters<typeof Nubbin>) =>
+  new Nubbin(...args)

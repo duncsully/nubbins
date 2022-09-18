@@ -40,15 +40,6 @@ describe('Nubbin', () => {
 
       expect(console.warn).toHaveBeenCalled()
     })
-
-    it('calls setter if passed to constructor', () => {
-      const setter = jest.fn()
-      const nubbin = new Nubbin(() => 1, setter)
-
-      nubbin.set(2)
-
-      expect(setter).toHaveBeenCalledWith(2)
-    })
   })
 
   describe('value', () => {
@@ -92,7 +83,7 @@ describe('Nubbin', () => {
     })
 
     it('can have change check configured with hasChanged option', () => {
-      const nubbin = new Nubbin(['beans', 'chicken'], undefined, {
+      const nubbin = new Nubbin(['beans', 'chicken'], {
         hasChanged: (current, next) =>
           next.some((value, i) => current?.[i] !== value),
       })

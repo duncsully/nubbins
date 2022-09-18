@@ -11,7 +11,7 @@ When it comes to managing complexity, we're used to breaking larger things up in
 
 ```typescript
 // read-write nubbin
-export const countNubbin = new Nubbin(0)
+export const countNubbin = nubbin(0)
 ```
 
 ### Readonly/computed/derived nubbins
@@ -19,9 +19,9 @@ export const countNubbin = new Nubbin(0)
 Pass a pure function to the Nubbin constructor to create a nubbin that is readonly. It will track as dependencies any nubbins that are used in the function. After the first call to initialize, all read computations are lazy and memoized; if a nubbin has no subscribers, it will wait until its value is read before it will recompute it, and then it will only recompute if any of its dependencies change. This works even if the dependencies aren't all exposed right away in the getter function (i.e. conditionally read).
 
 ```typescript
-export const countNubbin = new Nubbin(0)
+export const countNubbin = nubbin(0)
 // Will track updates to countNubbin, but won't recompute until read
-export const doubledNubbin = new Nubbin(() => countNubbin.get() * 2)
+export const doubledNubbin = nubbin(() => countNubbin.get() * 2)
 ```
 
 ## Using nubbins
@@ -29,17 +29,17 @@ export const doubledNubbin = new Nubbin(() => countNubbin.get() * 2)
 Read:
 
 ```typescript
-myNubbin.get()
+countNubbin.get()
 // or~
-myNubbin.value
+countNubbin.value
 ```
 
 Write:
 
 ```typescript
-myNubbin.set(5)
+countNubbin.set(5)
 // or~
-myNubbin.value = 5
+countNubbin.value = 5
 ```
 
 ~[See recommendation](#get-and-set-vs-value)
@@ -47,11 +47,11 @@ myNubbin.value = 5
 Subscribe:
 
 ```typescript
-myNubbin.subscribe(value => {
+countNubbin.subscribe(value => {
   // will be immediately invoked with the current value
 })
 
-myNubbin.observe(() => {
+countNubbin.observe(() => {
   // won't be invoked until next update
 })
 ```
@@ -63,17 +63,17 @@ myNubbin.observe(() => {
 A `useNubbin` hook is provided for each of these libraries. It operates much the same way as the `useState` hook, returning a tuple with the current value of the nubbin as the first item and the setter for the nubbin as the second item.
 
 ```typescript
-import { someNubbin } from './someNubbin'
+import { countNubbin } from './countNubbin'
 import { useNubbin } from 'nubbins/react' // use nubbins/haunted or nubbins/preact for their respective versions
 
 // ...someComponent
-const [myNubbin, setMyNubbin] = useNubbin(someNubbin)
+const [count, setCount] = useNubbin(countNubbin)
 
 // read
-const doubled = myNubbin
+const doubled = count * 2
 
 // write
-setMyNubbin(5)
+setCount(5)
 ```
 
 ### Preact signals
@@ -81,20 +81,20 @@ setMyNubbin(5)
 Preact signal support is also provided with the `useNubbinSignal` hook. This allows you to read and set a reactive `.value` property, and also leverage Preact's optimizations when passing a signal directly into its templates.
 
 ```jsx
-import { someNubbin } from './someNubbin'
+import { countNubbin } from './countNubbin'
 import { useNubbinSignal } from 'nubbins/preact'
 
 const SomeComponent = () => {
-  const myNubbin = useNubbinSignal(someNubbin)
+  const count = useNubbinSignal(countNubbin)
 
   // read
-  const doubled = myNubbin.value
+  const doubled = count.value * 2
 
   // write
-  myNubbin.value = 5
+  count.value = 5
 
   // pass signal in directly
-  return <input value={myNubbin} />
+  return <input value={count} />
 }
 ```
 
@@ -103,16 +103,16 @@ const SomeComponent = () => {
 Solid support is provided via a `nubbinSignal` utility which converts a provided nubbin into a Solid signal and returns a tuple with a getter and setter.
 
 ```typescript
-import { someNubbin } from './someNubbin'
+import { countNubbin } from './countNubbin'
 import { nubbinSignal } from 'nubbins/solid'
 
-const [myNubbin, setMyNubbin] = nubbinSignal(someNubbin)
+const [count, setCount] = nubbinSignal(countNubbin)
 
 // read
-const doubled = myNubbin() * 2
+const doubled = count() * 2
 
 // write
-setMyNubbin(5)
+setCount(5)
 ```
 
 ### Vue
@@ -121,21 +121,21 @@ A `nubbinRef` utility is provided to transform a nubbin into a Vue ref, which ha
 
 ```vue
 <script setup>
-  import { someNubbin } from './someNubbin'
+  import { countNubbin } from './countNubbin'
   import { nubbinRef } from 'nubbins/vue'
 
-  const someNubbinRef = nubbinRef(someNubbin)
+  const countRef = nubbinRef(countNubbin)
 
   // read
-  const doubled = someNubbinRef.value * 2
+  const doubled = countRef.value * 2
 
   // write
-  someNubbinRef.value = 5
+  countRef.value = 5
 </script>
 
 <template>
   <!-- two-way bind -->
-  <input v-model="someNubbinRef"/>
+  <input v-model="countRef"/>
 </template>
 ```
 
@@ -145,17 +145,17 @@ Conveniently, since nubbins follow the store contract of Svelte, you can use the
 
 ```svelte
 <script>
-  import { someNubbin } from './someNubbin'
+  import { countNubbin } from './countNubbin'
 
   // read
-  const doubled = $someNubbin * 2
+  const doubled = $countNubbin * 2
 
   // write
-  $someNubbin = 5
+  $countNubbin = 5
 </script>
 
 <!-- two-way bind -->
-<input bind:value={$someNubbin}>
+<input bind:value={$countNubbin}>
 ```
 
 ## Batching Updates
@@ -188,5 +188,5 @@ Nubbin.action(() => {
 While you are free to use either, or any combination of them for that matter, the methods are preferred because:
 
 - It is explicit that your read or write action does other things (i.e. hooks into an FE library's lifecycle)
-- Following off the last point, the set method allows passing a function to dynamically set the next value based on the current value that gets passed to the function. This technically is still supported with `.value` but would look more confusing e.g. `someNubbin.value = value => value + 1`
+- Following off the last point, the set method allows passing a function to dynamically set the next value based on the current value that gets passed to the function. This technically is still supported with `.value` but would look more confusing e.g. `countNubbin.value = value => value + 1`
 - The methods can maintain context in a destructuring assignment, allowing you to use them "disconnected" from the nubbin
