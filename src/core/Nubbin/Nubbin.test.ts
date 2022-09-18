@@ -157,6 +157,53 @@ describe('Nubbin', () => {
 
       expect(getterCheck).toHaveBeenCalled()
     })
+
+    it('lazily evaluates getters', () => {
+      const nubbin = new Nubbin(['a', 'b', 'c'])
+      const getterCheck = jest.fn()
+      const sortedNubbin = new Nubbin(() => {
+        getterCheck()
+        return [...nubbin.get()].sort()
+      })
+      getterCheck.mockClear()
+
+      nubbin.set([])
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedNubbin.get()
+
+      expect(getterCheck).toHaveBeenCalled()
+
+      getterCheck.mockClear()
+
+      nubbin.set(['hi'])
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedNubbin.subscribe(jest.fn())
+
+      expect(getterCheck).toHaveBeenCalled()
+    })
+
+    it(`works with getters that do not call all dependencies (i.e. conditionals) even 
+    if subscribing after conditional would expose new dependencies`, () => {
+      const nubbin = new Nubbin(1)
+      const laterNubbin = new Nubbin(2)
+      const computedNubbin = new Nubbin(() => {
+        if (nubbin.get() > 2) {
+          return laterNubbin.get()
+        }
+        return 0
+      })
+
+      nubbin.set(3)
+      const subscriber = jest.fn()
+      computedNubbin.observe(subscriber)
+      laterNubbin.set(5)
+
+      expect(subscriber).toHaveBeenCalled()
+    })
   })
 
   describe('unsubscribe', () => {

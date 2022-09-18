@@ -5,7 +5,7 @@ import { Subscriber } from './Subscriber'
 // I could see reasons for both
 // TODO: Better type inference: no set method + value setter if getter without setter passed?
 // TODO: Track first value? Reset option?
-// TODO: Lazy getter until gotten/subscribed?
+// TODO: Continue tracking? Conditional getter?
 
 /**
  * An atomic state piece that allows subscribing to changes and tracks
@@ -43,9 +43,9 @@ export class Nubbin<T> {
   ) {
     if (valueOrGetter instanceof Function) {
       this.getter = valueOrGetter
-      Nubbin.context.push(this)
-      this._value = valueOrGetter()
-      Nubbin.context.pop()
+
+      // Need to compute the initial value to build the dependency graph
+      this.getLatestValue()
     } else {
       this._value = valueOrGetter
     }
@@ -61,6 +61,9 @@ export class Nubbin<T> {
   get = () => {
     const caller = Nubbin.context.at(-1)
     if (caller) this._dependents.add(caller)
+    if (this._stale) {
+      this.getLatestValue()
+    }
     return this._value
   }
 
@@ -92,6 +95,12 @@ export class Nubbin<T> {
    */
   observe = (subscriber: Subscriber<T>) => {
     this._subscribers.add(subscriber)
+    // It's possible we have new dependencies that weren't tracked previously
+    // due to no subscriptions prompting the value to be recomputed
+    // This subscriber needs to be updated if those new dependencies get updated
+    if (this._stale) {
+      this.getLatestValue()
+    }
     return () => this.unsubscribe(subscriber)
   }
 
@@ -109,7 +118,9 @@ export class Nubbin<T> {
     this._subscribers.delete(updateHandler)
   }
 
-  protected _value: T
+  protected _value!: T
+
+  protected _stale = true
 
   protected getter?: () => T
 
@@ -117,29 +128,30 @@ export class Nubbin<T> {
 
   protected _subscribers = new Set<Subscriber<T>>()
 
-  // TODO: A bit messy, could this be cleaned up?
-  // The idea is that a leaf node will always be a primitive value, so we
-  // need to pass in the previous value to compare. But dependents will always need to
-  // recalculate their values
-  protected getAllUpdates = (...args: [T?]) => {
-    const [previousValueTop] = args
+  /**
+   *
+   * @param previousValueTop
+   * @returns
+   */
+  protected getAllUpdates = (previousValueTop?: T) => {
     const { hasChanged = notEqual } = this._options
     const allSubscribers: (() => void)[] = []
-    // This allows us to know if undefined was explicitly passed
-    const oldValue = args.length ? previousValueTop : this._value
-    if (!args.length) {
-      // Dependents will always be computed
-      this._value = this.getter!()
+
+    if (this._subscribers.size) {
+      const oldValue = this.getter ? this._value : previousValueTop
+      this.getLatestValue()
+      if (hasChanged(oldValue, this._value)) {
+        this._subscribers.forEach(subscriber =>
+          allSubscribers.push(() => subscriber(this._value))
+        )
+      }
+    } else {
+      this._stale = true
     }
 
-    if (hasChanged(oldValue, this._value)) {
-      this._subscribers.forEach(subscriber =>
-        allSubscribers.push(() => subscriber(this._value))
-      )
-      this._dependents.forEach(dependent => {
-        allSubscribers.push(...dependent.getAllUpdates())
-      })
-    }
+    this._dependents.forEach(dependent => {
+      allSubscribers.push(...dependent.getAllUpdates())
+    })
 
     return allSubscribers
   }
@@ -147,6 +159,15 @@ export class Nubbin<T> {
   protected updateSubscribers(previousValueTop?: T) {
     const updates = this.getAllUpdates(previousValueTop)
     updates.forEach(update => update())
+  }
+
+  protected getLatestValue() {
+    if (this.getter) {
+      Nubbin.context.push(this)
+      this._value = this.getter()
+      this._stale = false
+      Nubbin.context.pop()
+    }
   }
 }
 
