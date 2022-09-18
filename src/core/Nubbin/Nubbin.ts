@@ -104,7 +104,18 @@ export class Nubbin<T> {
     this._subscribers.delete(updateHandler)
   }
 
-  protected _value!: T
+  /**
+   * Accessor and setter allow for extending this class in case value comes from
+   * external source, e.g. search params
+   */
+  protected get _value() {
+    return this._internalValue
+  }
+  protected set _value(newValue) {
+    this._internalValue = newValue
+  }
+
+  protected _internalValue!: T
 
   protected _stale = true
 
@@ -114,11 +125,6 @@ export class Nubbin<T> {
 
   protected _subscribers = new Set<Subscriber<T>>()
 
-  /**
-   *
-   * @param previousValueTop
-   * @returns
-   */
   protected getAllUpdates = (previousValueTop?: T) => {
     const { hasChanged = notEqual } = this._options
     const allSubscribers: (() => void)[] = []
