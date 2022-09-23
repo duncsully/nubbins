@@ -2,13 +2,15 @@ import { notEqual } from '../../utils'
 import { NubbinOptions } from './NubbinOptions'
 import { Subscriber } from './Subscriber'
 
+// TODO: Implement valueOf? Would technically allow direct use of number nubbins (numbins?) without .get() or .value
+
 /**
  * An atomic state piece that allows subscribing to changes and tracks
  * dependent Nubbins
  */
-export class Nubbin<T> {
-  static context: Nubbin<any>[] = []
-  static batchedUpdateChecks: undefined | Set<Nubbin<any>>
+export class ComputedNubbin<T> {
+  static context: ComputedNubbin<any>[] = []
+  static batchedUpdateChecks: undefined | Set<ComputedNubbin<any>>
   /**
    * All subscription updates will be deferred until after passed action has run,
    * preventing a subscriber from being updated multiple times for multiple
@@ -18,60 +20,36 @@ export class Nubbin<T> {
   static action(action: () => void) {
     // If there is already a set, this is a nested call, don't flush until we
     // return to the top level
-    const flush = !Nubbin.batchedUpdateChecks
-    Nubbin.batchedUpdateChecks ??= new Set()
+    const flush = !ComputedNubbin.batchedUpdateChecks
+    ComputedNubbin.batchedUpdateChecks ??= new Set()
     action()
     if (flush) {
-      Nubbin.batchedUpdateChecks?.forEach(nubbin => nubbin.updateSubscribers())
-      Nubbin.batchedUpdateChecks = undefined
+      ComputedNubbin.batchedUpdateChecks?.forEach(nubbin =>
+        nubbin.updateSubscribers()
+      )
+      ComputedNubbin.batchedUpdateChecks = undefined
     }
   }
 
   constructor(
-    valueOrGetter: T | (() => T),
+    protected getter?: () => T,
     private _options: NubbinOptions<T> = {}
   ) {
-    if (valueOrGetter instanceof Function) {
-      this.getter = valueOrGetter
-
-      // Need to compute the initial value to build the dependency graph
-      this.getLatestValue()
-    } else {
-      this._value = valueOrGetter
-    }
+    // Need to compute the initial value to build the dependency graph
+    this.getLatestValue()
   }
 
   get value() {
     return this.get()
   }
-  set value(newValue) {
-    this.set(newValue)
-  }
 
   get = () => {
-    const caller = Nubbin.context.at(-1)
+    const caller = ComputedNubbin.context.at(-1)
     if (caller) this._dependents.add(caller)
     if (this._stale) {
       this.getLatestValue()
     }
     return this._value
-  }
-
-  set = (value: T | ((currentValue: T) => T)) => {
-    if (this.getter) {
-      console.warn('Attempted setting readonly nubbin:', this)
-      return
-    }
-
-    const currentValue = this._value
-    const newValue = value instanceof Function ? value(currentValue) : value
-    this._value = newValue
-
-    if (!Nubbin.batchedUpdateChecks) {
-      this.updateSubscribers(currentValue)
-    } else {
-      Nubbin.batchedUpdateChecks.add(this)
-    }
   }
 
   /**
@@ -119,9 +97,7 @@ export class Nubbin<T> {
 
   protected _stale = true
 
-  protected getter?: () => T
-
-  protected _dependents = new Set<Nubbin<any>>()
+  protected _dependents = new Set<ComputedNubbin<any>>()
 
   protected _subscribers = new Set<Subscriber<T>>()
 
@@ -155,13 +131,51 @@ export class Nubbin<T> {
 
   protected getLatestValue() {
     if (this.getter) {
-      Nubbin.context.push(this)
+      ComputedNubbin.context.push(this)
       this._value = this.getter()
       this._stale = false
-      Nubbin.context.pop()
+      ComputedNubbin.context.pop()
     }
   }
 }
 
-export const nubbin = (...args: ConstructorParameters<typeof Nubbin>) =>
-  new Nubbin(...args)
+export class Nubbin<T> extends ComputedNubbin<T> {
+  constructor(value: T, options?: NubbinOptions<T>) {
+    super(undefined, options)
+    this._internalValue = value
+  }
+
+  set = (value: T | ((currentValue: T) => T)) => {
+    const currentValue = this._value
+    const newValue = value instanceof Function ? value(currentValue) : value
+    this._value = newValue
+
+    if (!ComputedNubbin.batchedUpdateChecks) {
+      this.updateSubscribers(currentValue)
+    } else {
+      ComputedNubbin.batchedUpdateChecks.add(this)
+    }
+  }
+
+  get value() {
+    return super.value
+  }
+  set value(newValue: T) {
+    this.set(newValue)
+  }
+}
+
+type InferNubbin<T> = T extends () => infer V ? ComputedNubbin<V> : Nubbin<T>
+
+export const nubbin = <T, Value = T extends () => infer V ? V : T>(
+  valueOrGetter: T,
+  options?: NubbinOptions<Value>
+) => {
+  return (
+    valueOrGetter instanceof Function
+      ? new ComputedNubbin(valueOrGetter as () => Value, options)
+      : new Nubbin(valueOrGetter, options as unknown as NubbinOptions<T>)
+  ) as InferNubbin<T>
+}
+
+export const action = ComputedNubbin.action

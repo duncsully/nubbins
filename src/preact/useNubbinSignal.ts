@@ -1,16 +1,22 @@
-import { Nubbin } from '../core'
-import { effect, useSignal } from '@preact/signals'
+import { ComputedNubbin, Nubbin } from '../core'
+import { effect, Signal, ReadonlySignal, useSignal } from '@preact/signals'
 import { useCallback, useEffect } from 'preact/hooks'
 
-export const useNubbinSignal = <T>(nubbin: Nubbin<T>) => {
+export const useNubbinSignal = <T extends ComputedNubbin<any> | Nubbin<any>>(
+  nubbin: T
+) => {
+  type Value = T['value']
+  const writeable = nubbin instanceof Nubbin
   const signal = useSignal(nubbin.get())
-  const updateSignal = useCallback((value: T) => (signal.value = value), [])
+  const updateSignal = useCallback((value: Value) => (signal.value = value), [])
 
   useEffect(() => {
     const dispose = effect(() => {
       // Would get stuck in an infinite update loop otherwise
       nubbin.unsubscribe(updateSignal)
-      nubbin.set(signal.value)
+      if (writeable) {
+        nubbin.set(signal.value)
+      }
       nubbin.observe(updateSignal)
     })
     return () => {
@@ -19,5 +25,9 @@ export const useNubbinSignal = <T>(nubbin: Nubbin<T>) => {
     }
   }, [nubbin])
 
-  return signal
+  return signal as T extends Nubbin<infer R>
+    ? Signal<R>
+    : T extends ComputedNubbin<infer R>
+    ? ReadonlySignal<R>
+    : never
 }

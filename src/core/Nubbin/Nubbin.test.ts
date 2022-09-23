@@ -1,4 +1,120 @@
-import { Nubbin } from './Nubbin'
+import { ComputedNubbin, nubbin, Nubbin } from './Nubbin'
+
+// TODO: More complete tests / better organization? The class split results in mostly
+// the same functionality that is more easily tested with a writeable nubbin
+
+describe('ComputedNubbin', () => {
+  describe('get', () => {
+    it('returns return value of function passed to constructor', () => {
+      const nubbin = new ComputedNubbin(() => 'hi')
+
+      expect(nubbin.get()).toBe('hi')
+    })
+  })
+
+  describe('reactivity', () => {
+    it('calls subscribers when dependencies change', () => {
+      const nubbin = new Nubbin(1)
+      const squared = new ComputedNubbin(() => nubbin.get() ** 2)
+      const cubed = new ComputedNubbin(() => nubbin.get() ** 3)
+
+      const subscriber = jest.fn()
+      squared.observe(subscriber)
+      cubed.observe(subscriber)
+      nubbin.set(2)
+
+      expect(subscriber).toHaveBeenCalledTimes(2)
+      expect(subscriber).toHaveBeenNthCalledWith(1, 4)
+      expect(subscriber).toHaveBeenNthCalledWith(2, 8)
+    })
+
+    it('does not recompute data until dependencies change (i.e. is memoized)', () => {
+      const nubbin = new Nubbin(['a', 'b', 'c'])
+      const getterCheck = jest.fn()
+      const sortedNubbin = new ComputedNubbin(() => {
+        getterCheck()
+        return [...nubbin.get()].sort()
+      })
+      getterCheck.mockClear()
+
+      sortedNubbin.get()
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedNubbin.subscribe(jest.fn())
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      nubbin.set([])
+
+      expect(getterCheck).toHaveBeenCalled()
+    })
+
+    it('does not update if recomputed value still the same after dependencies change', () => {
+      const nubbin = new Nubbin(1.1)
+      const flooredNubbin = new ComputedNubbin(() => Math.floor(nubbin.get()))
+      const doubledFlooredNubbin = new ComputedNubbin(
+        () => flooredNubbin.get() * 2
+      )
+
+      const flooredSubscriber = jest.fn()
+      flooredNubbin.observe(flooredSubscriber)
+      const doubledFlooredSubscriber = jest.fn()
+      doubledFlooredNubbin.observe(doubledFlooredSubscriber)
+      nubbin.set(1.2)
+
+      expect(flooredSubscriber).not.toHaveBeenCalled()
+      expect(doubledFlooredSubscriber).not.toHaveBeenCalled()
+    })
+
+    it('lazily evaluates getters', () => {
+      const nubbin = new Nubbin(['a', 'b', 'c'])
+      const getterCheck = jest.fn()
+      const sortedNubbin = new ComputedNubbin(() => {
+        getterCheck()
+        return [...nubbin.get()].sort()
+      })
+      getterCheck.mockClear()
+
+      nubbin.set([])
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedNubbin.get()
+
+      expect(getterCheck).toHaveBeenCalled()
+
+      getterCheck.mockClear()
+
+      nubbin.set(['hi'])
+
+      expect(getterCheck).not.toHaveBeenCalled()
+
+      sortedNubbin.subscribe(jest.fn())
+
+      expect(getterCheck).toHaveBeenCalled()
+    })
+
+    it(`works with getters that do not call all dependencies (i.e. conditionals) even 
+    if subscribing after conditional would expose new dependencies`, () => {
+      const nubbin = new Nubbin(1)
+      const laterNubbin = new Nubbin(2)
+      const computedNubbin = new ComputedNubbin(() => {
+        if (nubbin.get() > 2) {
+          return laterNubbin.get()
+        }
+        return 0
+      })
+
+      nubbin.set(3)
+      const subscriber = jest.fn()
+      computedNubbin.observe(subscriber)
+      laterNubbin.set(5)
+
+      expect(subscriber).toHaveBeenCalled()
+    })
+  })
+})
 
 describe('Nubbin', () => {
   describe('get', () => {
@@ -6,12 +122,6 @@ describe('Nubbin', () => {
       const nubbin = new Nubbin(1)
 
       expect(nubbin.get()).toBe(1)
-    })
-
-    it('returns return value of function passed to constructor', () => {
-      const nubbin = new Nubbin(() => 'hi')
-
-      expect(nubbin.get()).toBe('hi')
     })
   })
 
@@ -30,15 +140,6 @@ describe('Nubbin', () => {
       nubbin.set(value => ++value)
 
       expect(nubbin.get()).toBe(2)
-    })
-
-    it('logs warning if used on getter Nubbin without setter', () => {
-      const nubbin = new Nubbin(() => 1)
-
-      jest.spyOn(console, 'warn').mockImplementation(() => null)
-      nubbin.set(2)
-
-      expect(console.warn).toHaveBeenCalled()
     })
   })
 
@@ -96,107 +197,6 @@ describe('Nubbin', () => {
     })
   })
 
-  describe('observe + get + set', () => {
-    it('updates subscribers for nubbin dependent on other nubbin', () => {
-      const nubbin = new Nubbin(1)
-      const squared = new Nubbin(() => nubbin.get() ** 2)
-      const cubed = new Nubbin(() => nubbin.get() ** 3)
-
-      const subscriber = jest.fn()
-      squared.observe(subscriber)
-      cubed.observe(subscriber)
-      nubbin.set(2)
-
-      expect(subscriber).toHaveBeenCalledTimes(2)
-      expect(subscriber).toHaveBeenNthCalledWith(1, 4)
-      expect(subscriber).toHaveBeenNthCalledWith(2, 8)
-    })
-
-    it('does not update if dependent nubbin does not change value', () => {
-      const nubbin = new Nubbin(1.1)
-      const flooredNubbin = new Nubbin(() => Math.floor(nubbin.get()))
-      const doubledFlooredNubbin = new Nubbin(() => flooredNubbin.get() * 2)
-
-      const flooredSubscriber = jest.fn()
-      flooredNubbin.observe(flooredSubscriber)
-      const doubledFlooredSubscriber = jest.fn()
-      doubledFlooredNubbin.observe(doubledFlooredSubscriber)
-      nubbin.set(1.2)
-
-      expect(flooredSubscriber).not.toHaveBeenCalled()
-      expect(doubledFlooredSubscriber).not.toHaveBeenCalled()
-    })
-
-    it('does not recompute data until dependents change', () => {
-      const nubbin = new Nubbin(['a', 'b', 'c'])
-      const getterCheck = jest.fn()
-      const sortedNubbin = new Nubbin(() => {
-        getterCheck()
-        return [...nubbin.get()].sort()
-      })
-      getterCheck.mockClear()
-
-      sortedNubbin.get()
-
-      expect(getterCheck).not.toHaveBeenCalled()
-
-      sortedNubbin.subscribe(jest.fn())
-
-      expect(getterCheck).not.toHaveBeenCalled()
-
-      nubbin.set([])
-
-      expect(getterCheck).toHaveBeenCalled()
-    })
-
-    it('lazily evaluates getters', () => {
-      const nubbin = new Nubbin(['a', 'b', 'c'])
-      const getterCheck = jest.fn()
-      const sortedNubbin = new Nubbin(() => {
-        getterCheck()
-        return [...nubbin.get()].sort()
-      })
-      getterCheck.mockClear()
-
-      nubbin.set([])
-
-      expect(getterCheck).not.toHaveBeenCalled()
-
-      sortedNubbin.get()
-
-      expect(getterCheck).toHaveBeenCalled()
-
-      getterCheck.mockClear()
-
-      nubbin.set(['hi'])
-
-      expect(getterCheck).not.toHaveBeenCalled()
-
-      sortedNubbin.subscribe(jest.fn())
-
-      expect(getterCheck).toHaveBeenCalled()
-    })
-
-    it(`works with getters that do not call all dependencies (i.e. conditionals) even 
-    if subscribing after conditional would expose new dependencies`, () => {
-      const nubbin = new Nubbin(1)
-      const laterNubbin = new Nubbin(2)
-      const computedNubbin = new Nubbin(() => {
-        if (nubbin.get() > 2) {
-          return laterNubbin.get()
-        }
-        return 0
-      })
-
-      nubbin.set(3)
-      const subscriber = jest.fn()
-      computedNubbin.observe(subscriber)
-      laterNubbin.set(5)
-
-      expect(subscriber).toHaveBeenCalled()
-    })
-  })
-
   describe('unsubscribe', () => {
     it('removes passed callback from subscriptions', () => {
       const nubbin = new Nubbin(1)
@@ -246,8 +246,8 @@ describe('Nubbin', () => {
       nubbin1.observe(subscriber)
       nubbin2.observe(subscriber)
 
-      Nubbin.action(() => {
-        Nubbin.action(() => {
+      ComputedNubbin.action(() => {
+        ComputedNubbin.action(() => {
           nubbin1.set(2)
           expect(subscriber).not.toHaveBeenCalled()
         })
@@ -262,15 +262,27 @@ describe('Nubbin', () => {
   it('will not update dependent nubbin if its value after all operations has not changed', () => {
     const widthNubbin = new Nubbin(1)
     const heightNubbin = new Nubbin(10)
-    const areaNubbin = new Nubbin(() => widthNubbin.get() * heightNubbin.get())
+    const areaNubbin = new ComputedNubbin(
+      () => widthNubbin.get() * heightNubbin.get()
+    )
     const subscriber = jest.fn()
     areaNubbin.observe(subscriber)
 
-    Nubbin.action(() => {
+    ComputedNubbin.action(() => {
       widthNubbin.set(2)
       heightNubbin.set(5)
     })
 
     expect(subscriber).not.toHaveBeenCalled()
+  })
+})
+
+describe('nubbin', () => {
+  it('returns a ComputedNubbin if passed a function, else a Nubbin', () => {
+    const nubbin1 = nubbin(1)
+    const nubbin2 = nubbin(() => nubbin1.get() * 2)
+
+    expect(nubbin1 instanceof Nubbin).toBeTruthy()
+    expect(nubbin2 instanceof ComputedNubbin).toBeTruthy()
   })
 })

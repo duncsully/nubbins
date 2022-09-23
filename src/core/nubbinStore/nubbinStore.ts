@@ -1,8 +1,8 @@
-import { Nubbin } from '../Nubbin/Nubbin'
+import { ComputedNubbin, nubbin, Nubbin } from '../Nubbin/Nubbin'
 
 export type NubbinStore<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any
-    ? Nubbin<ReturnType<T[K]>>
+    ? ComputedNubbin<ReturnType<T[K]>>
     : Nubbin<T[K]>
 }
 
@@ -25,12 +25,12 @@ export const nubbinStore = <T extends object>(obj: T) => {
     Object.defineProperty(result, key, {
       ...common,
       get() {
-        const nubbin = new Nubbin(value)
+        const returnNubbin = nubbin(value)
         Object.defineProperty(result, key, {
-          value: nubbin,
+          value: returnNubbin,
           ...common,
         })
-        return nubbin
+        return returnNubbin
       },
     })
   })

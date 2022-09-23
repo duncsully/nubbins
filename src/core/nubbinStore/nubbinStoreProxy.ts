@@ -9,8 +9,8 @@ export const nubbinStoreProxy = <T>(
 ) => {
   const unsubscribe = () => {
     if (subscriber) {
-      Object.values<Nubbin<any>>(nubbinStore).forEach(nubbin =>
-        nubbin.unsubscribe(subscriber)
+      Object.values(nubbinStore).forEach(nubbin =>
+        (nubbin as Nubbin<any>).unsubscribe(subscriber)
       )
     }
   }
@@ -28,7 +28,10 @@ export const nubbinStoreProxy = <T>(
         return nubbin.get()
       },
       set(_, key, newValue) {
-        nubbinStore[key as keyof NubbinStore<T>].set(newValue)
+        const targetNubbin = nubbinStore[key as keyof NubbinStore<T>]
+        if (targetNubbin instanceof Nubbin) {
+          targetNubbin.set(newValue)
+        }
         return true
       },
     }
