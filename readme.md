@@ -24,6 +24,26 @@ export const countNubbin = nubbin(0)
 export const doubledNubbin = nubbin(() => countNubbin.get() * 2)
 ```
 
+### Nubbin stores
+
+Creating and organizing numerous nubbins can get tedious. For convenience, you can create multiple nubbins with `nubbinStore` and either leave them grouped together in a store or destructure them into individual nubbins.
+
+```typescript
+export const dimensionsStore = nubbinStore({
+  width: 1,
+  length: 1,
+  area: () => dimensionsStore.width.get() * dimensionsStore.length.get()
+})
+
+// or
+
+export const { width, length, area } = nubbinStore({
+  width: 1,
+  length: 1,
+  area: () => width.get() * length.get()
+})
+```
+
 ## Using nubbins
 
 Read:
@@ -60,7 +80,7 @@ countNubbin.observe(() => {
 
 ### React / Preact / Haunted
 
-A `useNubbin` hook is provided for each of these libraries. It operates much the same way as the `useState` hook, returning a tuple with the current value of the nubbin as the first item and the setter for the nubbin as the second item.
+A `useNubbin` hook is provided for each of these libraries. It operates much the same way as the `useState` hook, returning a tuple with the current value of the nubbin as the first item and, if not computed, the setter for the nubbin as the second item.
 
 ```typescript
 import { countNubbin } from './countNubbin'
@@ -78,7 +98,7 @@ setCount(5)
 
 ### Preact signals
 
-Preact signal support is also provided with the `useNubbinSignal` hook. This allows you to read and set a reactive `.value` property, and also leverage Preact's optimizations when passing a signal directly into its templates.
+Preact signal support is also provided with the `useNubbinSignal` hook. This allows you to read and, if not computed, set a reactive `.value` property, and also leverage Preact's optimizations when passing a signal directly into its templates.
 
 ```jsx
 import { countNubbin } from './countNubbin'
@@ -100,7 +120,7 @@ const SomeComponent = () => {
 
 ### Solid
 
-Solid support is provided via a `nubbinSignal` utility which converts a provided nubbin into a Solid signal and returns a tuple with a getter and setter.
+Solid support is provided via a `nubbinSignal` utility which converts a provided nubbin into a Solid signal and returns a tuple with a getter and, if not computed, a setter.
 
 ```typescript
 import { countNubbin } from './countNubbin'
@@ -160,12 +180,14 @@ Conveniently, since nubbins follow the store contract of Svelte, you can use the
 
 ## Batching Updates
 
-In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `Nubbin.action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes. 
+In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes. 
 
 ```typescript
-const width = new Nubbin(1)
-const length = new Nubbin(20)
-const area = new Nubbin(width.get() * length.get())
+import { nubbin, action } from 'nubbins'
+
+const width = nubbin(1)
+const length = nubbin(20)
+const area = nubbin(() => width.get() * length.get())
 area.subscribe(console.log) // > 20
 
 // Setting these individually will trigger area subscriber each time
@@ -173,8 +195,8 @@ width.set(2) // > 40
 length.set(10) // > 20
 // Whoops!
 
-// But wrapping set calls in Nubbin.action batches the updates
-Nubbin.action(() => {
+// But wrapping set calls in action batches the updates
+action(() => {
   width.set(4)
   length.set(5)
 })
@@ -189,4 +211,4 @@ While you are free to use either, or any combination of them for that matter, th
 
 - It is explicit that your read or write action does other things (i.e. hooks into an FE library's lifecycle)
 - Following off the last point, the set method allows passing a function to dynamically set the next value based on the current value that gets passed to the function. This technically is still supported with `.value` but would look more confusing e.g. `countNubbin.value = value => value + 1`
-- The methods can maintain context in a destructuring assignment, allowing you to use them "disconnected" from the nubbin
+- The methods can maintain context in a destructuring assignment, allowing you to use them "disconnected" from the nubbin. Destructure assigning `.value` will just read the value immediately.

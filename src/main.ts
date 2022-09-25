@@ -15,15 +15,6 @@ import VueComponent from './vue/components/VueComponent.vue'
 import { render as renderPreact, html } from 'htm/preact'
 import { PreactComponent } from './preact/components/PreactComponent'
 
-// TODO:
-// - Add test for FE utilities
-// - Other FE libraries?
-// - search and persisted examples
-// - async nubbin?
-// - object and array nubbin?
-// - Add store utilities to other FEs? Document in readme
-// - Doc site
-
 const createDivAndAppendToBody = (id: string) => {
   const div = document.createElement('div')
   div.id = id

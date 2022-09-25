@@ -8,7 +8,7 @@ export type NubbinStore<T> = {
 
 /**
  * A convenience function for creating an object of nubbins from an object
- * of values. Note: doesn't allow passing setters.
+ * of values.
  * @param obj
  * @returns
  */
