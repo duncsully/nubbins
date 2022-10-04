@@ -1,0 +1,41 @@
+{
+  "name": "nubbins-preact",
+  "version": "0.0.0",
+  "description": "Nubbins helpers for Preact",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duncsully/nubbins.git"
+  },
+  "keywords": [
+    "state-management",
+    "preact"
+  ],
+  "author": "duncsully",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/duncsully/nubbins/issues"
+  },
+  "homepage": "https://github.com/duncsully/nubbins#readme",
+  "dependencies": {
+    "nubbins": "*",
+    "nubbins-common": "*"
+  },
+  "peerDependencies": {
+    "@preact/signals": "^1.1.1",
+    "preact": "^10.11.0"
+  },
+  "peerDependenciesMeta": {
+    "@preact/signals": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

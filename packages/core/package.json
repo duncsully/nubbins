@@ -1,0 +1,27 @@
+{
+  "name": "nubbins",
+  "version": "0.0.0",
+  "description": "An atom-based state management library",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duncsully/nubbins.git"
+  },
+  "keywords": [
+    "state-management"
+  ],
+  "author": "duncsully",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/duncsully/nubbins/issues"
+  },
+  "homepage": "https://github.com/duncsully/nubbins#readme",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

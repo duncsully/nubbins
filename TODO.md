@@ -1,7 +1,10 @@
 # Nubbins TODOs
 
 ### Need to do
-- Monorepo with separate packages for each FE helpers (Lerna?)
+- Monorepo with separate packages for each FE helpers
+  - Setup Vite
+  - Create and export function to mount demo components for each FE library (i.e. move from main.ts)
+  - Demo page package?
   - Add tests for FE utilities
 
 ### Ought to do

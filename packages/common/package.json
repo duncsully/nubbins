@@ -1,0 +1,28 @@
+{
+  "name": "nubbins-common",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Common code across the monorepo",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duncsully/nubbins.git"
+  },
+  "author": "duncsully",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/duncsully/nubbins/issues"
+  },
+  "homepage": "https://github.com/duncsully/nubbins#readme",
+  "dependencies": {
+    "nubbins": "*"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
