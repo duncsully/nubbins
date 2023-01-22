@@ -10,7 +10,8 @@
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs --dts",
-        "dev": "npm run build --watch"
+        "dev": "npm run build --watch",
+        "test": "vitest"
     },
     "repository": {
         "type": "git",

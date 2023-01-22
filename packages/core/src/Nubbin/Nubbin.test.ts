@@ -1,4 +1,5 @@
 import { ComputedNubbin, nubbin, Nubbin } from './Nubbin'
+import { describe, it, expect, vi } from 'vitest'
 
 // TODO: More complete tests / better organization? The class split results in mostly
 // the same functionality that is more easily tested with a writeable nubbin
@@ -18,7 +19,7 @@ describe('ComputedNubbin', () => {
       const squared = new ComputedNubbin(() => nubbin.get() ** 2)
       const cubed = new ComputedNubbin(() => nubbin.get() ** 3)
 
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       squared.observe(subscriber)
       cubed.observe(subscriber)
       nubbin.set(2)
@@ -30,7 +31,7 @@ describe('ComputedNubbin', () => {
 
     it('does not recompute data until dependencies change (i.e. is memoized)', () => {
       const nubbin = new Nubbin(['a', 'b', 'c'])
-      const getterCheck = jest.fn()
+      const getterCheck = vi.fn()
       const sortedNubbin = new ComputedNubbin(() => {
         getterCheck()
         return [...nubbin.get()].sort()
@@ -41,7 +42,7 @@ describe('ComputedNubbin', () => {
 
       expect(getterCheck).not.toHaveBeenCalled()
 
-      sortedNubbin.subscribe(jest.fn())
+      sortedNubbin.subscribe(vi.fn())
 
       expect(getterCheck).not.toHaveBeenCalled()
 
@@ -57,9 +58,9 @@ describe('ComputedNubbin', () => {
         () => flooredNubbin.get() * 2
       )
 
-      const flooredSubscriber = jest.fn()
+      const flooredSubscriber = vi.fn()
       flooredNubbin.observe(flooredSubscriber)
-      const doubledFlooredSubscriber = jest.fn()
+      const doubledFlooredSubscriber = vi.fn()
       doubledFlooredNubbin.observe(doubledFlooredSubscriber)
       nubbin.set(1.2)
 
@@ -69,7 +70,7 @@ describe('ComputedNubbin', () => {
 
     it('lazily evaluates getters', () => {
       const nubbin = new Nubbin(['a', 'b', 'c'])
-      const getterCheck = jest.fn()
+      const getterCheck = vi.fn()
       const sortedNubbin = new ComputedNubbin(() => {
         getterCheck()
         return [...nubbin.get()].sort()
@@ -90,7 +91,7 @@ describe('ComputedNubbin', () => {
 
       expect(getterCheck).not.toHaveBeenCalled()
 
-      sortedNubbin.subscribe(jest.fn())
+      sortedNubbin.subscribe(vi.fn())
 
       expect(getterCheck).toHaveBeenCalled()
     })
@@ -107,7 +108,7 @@ describe('ComputedNubbin', () => {
       })
 
       nubbin.set(3)
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       computedNubbin.observe(subscriber)
       laterNubbin.set(5)
 
@@ -163,9 +164,9 @@ describe('Nubbin', () => {
     it('calls all callbacks provided to subscribe method if value changed', () => {
       const nubbin = new Nubbin(1)
 
-      const subscriber1 = jest.fn()
+      const subscriber1 = vi.fn()
       nubbin.observe(subscriber1)
-      const subscriber2 = jest.fn()
+      const subscriber2 = vi.fn()
       nubbin.observe(subscriber2)
       nubbin.set(2)
 
@@ -176,7 +177,7 @@ describe('Nubbin', () => {
     it('does not call all callbacks if value did not change (using default hasChanged)', () => {
       const nubbin = new Nubbin(1)
 
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       nubbin.observe(subscriber)
       nubbin.set(1)
 
@@ -189,7 +190,7 @@ describe('Nubbin', () => {
           next.some((value, i) => current?.[i] !== value),
       })
 
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       nubbin.observe(subscriber)
       nubbin.set(['beans', 'chicken'])
 
@@ -201,7 +202,7 @@ describe('Nubbin', () => {
     it('removes passed callback from subscriptions', () => {
       const nubbin = new Nubbin(1)
 
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       nubbin.observe(subscriber)
       nubbin.unsubscribe(subscriber)
       nubbin.set(2)
@@ -212,7 +213,7 @@ describe('Nubbin', () => {
     it('is also returned by observe method', () => {
       const nubbin = new Nubbin(1)
 
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       const unsubscribe = nubbin.observe(subscriber)
       unsubscribe()
       nubbin.set(2)
@@ -224,14 +225,14 @@ describe('Nubbin', () => {
   describe('subscribe', () => {
     it('calls subscriber immediately with current value', () => {
       const nubbin = new Nubbin(1)
-      const subscriber1 = jest.fn()
+      const subscriber1 = vi.fn()
 
       nubbin.subscribe(subscriber1)
 
       expect(subscriber1).toHaveBeenCalledWith(1)
 
       nubbin.set(2)
-      const subscriber2 = jest.fn()
+      const subscriber2 = vi.fn()
       nubbin.subscribe(subscriber2)
 
       expect(subscriber2).toHaveBeenCalledWith(2)
@@ -242,7 +243,7 @@ describe('Nubbin', () => {
     it('defers subscription updates until after all actions (nested included) finish', () => {
       const nubbin1 = new Nubbin(1)
       const nubbin2 = new Nubbin('hi')
-      const subscriber = jest.fn()
+      const subscriber = vi.fn()
       nubbin1.observe(subscriber)
       nubbin2.observe(subscriber)
 
@@ -265,7 +266,7 @@ describe('Nubbin', () => {
     const areaNubbin = new ComputedNubbin(
       () => widthNubbin.get() * heightNubbin.get()
     )
-    const subscriber = jest.fn()
+    const subscriber = vi.fn()
     areaNubbin.observe(subscriber)
 
     ComputedNubbin.action(() => {

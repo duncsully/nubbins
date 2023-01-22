@@ -17,6 +17,7 @@
     "@changesets/cli": "^2.25.2",
     "prettier": "latest",
     "tsup": "^6.4.0",
-    "turbo": "latest"
+    "turbo": "latest",
+    "vitest": "^0.27.3"
   }
 }

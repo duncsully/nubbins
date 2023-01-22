@@ -1,5 +1,6 @@
 import { nubbinStore } from './nubbinStore'
 import { nubbinStoreProxy } from './nubbinStoreProxy'
+import { describe, it, expect, vi } from 'vitest'
 
 // A noop for reading values from a proxy
 const read = (...args: any[]) => args
@@ -27,7 +28,7 @@ describe('nubbinStoreProxy', () => {
       doubled: () => store.count.get() * 2,
       separate: 'hi',
     })
-    const subscriber = jest.fn()
+    const subscriber = vi.fn()
     const [storeProxy] = nubbinStoreProxy(store, subscriber)
 
     read(storeProxy.doubled)
@@ -53,7 +54,7 @@ describe('nubbinStoreProxy', () => {
       count: 1,
       doubled: () => store.count.get() * 2,
     })
-    const subscriber = jest.fn()
+    const subscriber = vi.fn()
     const [storeProxy, unsubscribe] = nubbinStoreProxy(store, subscriber)
 
     read(storeProxy.count, storeProxy.doubled)

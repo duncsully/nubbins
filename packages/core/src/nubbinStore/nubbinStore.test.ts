@@ -1,4 +1,5 @@
 import { nubbinStore } from './nubbinStore'
+import { describe, it, expect } from 'vitest'
 
 describe('nubbinStore', () => {
   it('creates an object of nubbins', () => {
