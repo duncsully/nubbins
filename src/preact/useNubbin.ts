@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'preact/hooks'
-import { useNubbinReturn } from '../common'
-import { ComputedNubbin, Nubbin } from '../core'
+import { useNubbinReturn } from '../../packages/common/src'
+import { ComputedNubbin, Nubbin } from '../../packages/core/src'
 
 export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   nubbin: T

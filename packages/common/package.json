@@ -1,0 +1,11 @@
+{
+    "name": "nubbin-common",
+    "main": "src/index.ts",
+    "types": "src/index.ts", 
+    "dependencies": {
+        "nubbins-core": "*"
+    },
+    "devDependencies": {
+        "typescript": "latest"
+    }
+}

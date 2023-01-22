@@ -1,7 +1,7 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit'
-import { ComputedNubbin, Nubbin } from '../core'
+import { ComputedNubbin, Nubbin } from '../../packages/core/src'
 
-// TODO: Improve ergonomics? Turn into decorator?
+// TODO: Improve ergonomics? Turn into decorator? Make it a reactive property
 export class NubbinController<T extends Nubbin<any> | ComputedNubbin<any>>
   implements ReactiveController
 {

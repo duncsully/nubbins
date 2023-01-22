@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import { useNubbinReturn } from '../common'
-import { ComputedNubbin, Nubbin } from '../core'
+import { useNubbinReturn } from '../../packages/common/src'
+import { ComputedNubbin, Nubbin } from '../../packages/core/src'
 
 // TODO: Support older React versions without useSyncExternalStore? Use shim?
 export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(

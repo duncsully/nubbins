@@ -2,69 +2,21 @@
   "name": "nubbins",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "jest --watch"
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "prepublish": "turbo run build lint",
+    "publish": "changeset version && changeset publish"
   },
   "devDependencies": {
-    "@preact/signals": "^1.0.4",
-    "@sveltejs/vite-plugin-svelte": "^1.0.5",
-    "@types/jest": "^29.0.0",
-    "@types/react": "^18.0.18",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-vue": "^3.1.0",
-    "haunted": "^5.0.0",
-    "htm": "^3.1.1",
-    "jest": "^28.0.0",
-    "jest-environment-jsdom": "^29.0.2",
-    "lit": "^2.3.1",
-    "preact": "^10.11.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "solid-js": "^1.5.4",
-    "svelte": "^3.50.1",
-    "ts-jest": "^28.0.8",
-    "typescript": "^4.6.4",
-    "vite": "^3.1.0",
-    "vue": "^3.2.39"
-  },
-  "peerDependencies": {
-    "haunted": "^5.0.0",
-    "lit": "^2.3.1",
-    "preact": "^10.11.0",
-    "@preact/signals": "^1.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "solid-js": "^1.5.4",
-    "vue": "^3.2.39"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    },
-    "haunted": {
-      "optional": true
-    },
-    "lit": {
-      "optional": true
-    },
-    "solid-js": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    },
-    "preact": {
-      "optional": true
-    },
-    "@preact/signals": {
-      "optional": true
-    }
+    "@changesets/cli": "^2.25.2",
+    "prettier": "latest",
+    "tsup": "^6.4.0",
+    "turbo": "latest"
   }
 }

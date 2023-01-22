@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from '../core'
+import { ComputedNubbin, Nubbin } from '../../packages/core/src'
 import { effect, Signal, ReadonlySignal, useSignal } from '@preact/signals'
 import { useCallback, useEffect } from 'preact/hooks'
 

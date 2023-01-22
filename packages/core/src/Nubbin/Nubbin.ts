@@ -1,4 +1,4 @@
-import { notEqual } from '../../utils'
+import { notEqual } from '../utils'
 import { NubbinOptions } from './NubbinOptions'
 import { Subscriber } from './Subscriber'
 

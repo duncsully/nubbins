@@ -4,8 +4,7 @@ An atom-based state management library that uses nubbin objects to track individ
 
 ## Why atom-based?
 
-When it comes to managing complexity, we're used to breaking larger things up into smaller things and composing those smaller things together to make software: projects get divided into folders and files, code is divided up into classes and functions, and pages are divided up into components. Likewise, we should divide state and actions up into small pieces and compose them together as much as possible. This makes it easier to share state, and only share the state you need, resulting in better code-splitting. Nubbins was also designed to interop with all of the popular frontend libraries so that you can keep all of your business logic state out of your view layer and easily switch between and/or swap out FE libraries with little friction. Updates are precise and performant. 
-
+When it comes to managing complexity, we're used to breaking larger things up into smaller things and composing those smaller things together to make software: projects get divided into folders and files, code is divided up into classes and functions, and pages are divided up into components. Likewise, we should divide state and actions up into small pieces and compose them together as much as possible. This makes it easier to share state, and only share the state you need, resulting in better code-splitting. Nubbins was also designed to interop with all of the popular frontend libraries so that you can keep all of your business logic state out of your view layer and easily switch between and/or swap out FE libraries with little friction. Updates are precise and performant.
 
 ## Creating
 
@@ -32,7 +31,7 @@ Creating and organizing numerous nubbins can get tedious. For convenience, you c
 export const dimensionsStore = nubbinStore({
   width: 1,
   length: 1,
-  area: () => dimensionsStore.width.get() * dimensionsStore.length.get()
+  area: () => dimensionsStore.width.get() * dimensionsStore.length.get(),
 })
 
 // or
@@ -40,7 +39,8 @@ export const dimensionsStore = nubbinStore({
 export const { width, length, area } = nubbinStore({
   width: 1,
   length: 1,
-  area: () => width.get() * length.get()
+  // Yes, you can reference these!
+  area: () => width.get() * length.get(),
 })
 ```
 
@@ -141,21 +141,21 @@ A `nubbinRef` utility is provided to transform a nubbin into a Vue ref, which ha
 
 ```vue
 <script setup>
-  import { countNubbin } from './countNubbin'
-  import { nubbinRef } from 'nubbins/vue'
+import { countNubbin } from './countNubbin'
+import { nubbinRef } from 'nubbins/vue'
 
-  const countRef = nubbinRef(countNubbin)
+const countRef = nubbinRef(countNubbin)
 
-  // read
-  const doubled = countRef.value * 2
+// read
+const doubled = countRef.value * 2
 
-  // write
-  countRef.value = 5
+// write
+countRef.value = 5
 </script>
 
 <template>
   <!-- two-way bind -->
-  <input v-model="countRef"/>
+  <input v-model="countRef" />
 </template>
 ```
 
@@ -180,7 +180,7 @@ Conveniently, since nubbins follow the store contract of Svelte, you can use the
 
 ## Batching Updates
 
-In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes. 
+In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes.
 
 ```typescript
 import { nubbin, action } from 'nubbins'
@@ -205,7 +205,7 @@ action(() => {
 
 ## .get() and .set() vs .value
 
-[](#methods-vs-property)To provide an API that is familiar across various FE libraries, nubbin objects have both a pair of `.get()` and `.set()` methods and also a `.value` property that aliases the `.get()` and `.set()` methods. The methods probably look familiar to users of Svelte stores and, to a lesser extent, Solid signals, while the `.value` property probably looks more familiar to users of Vue refs and Preact signals.
+[](#methods-vs-property)To provide an API that is familiar across various FE libraries, nubbin objects have both a pair of `.get()` and `.set()` methods and also a `.value` getter-setter that aliases the `.get()` and `.set()` methods. The methods probably look familiar to users of Svelte stores and, to a lesser extent, Solid signals, while the `.value` property probably looks more familiar to users of Vue refs and Preact signals.
 
 While you are free to use either, or any combination of them for that matter, the methods are preferred because:
 
