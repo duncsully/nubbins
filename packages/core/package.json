@@ -15,7 +15,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/jquery/jquery.git"
+        "url": "https://github.com/duncsully/nubbins.git"
     },
     "keywords": [
         "atomic",
