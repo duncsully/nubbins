@@ -1,19 +1,19 @@
-import './style.css'
+import '../style.css'
 import ReactDOM from 'react-dom/client'
-import { ReactComponent } from './react/components/ReactComponent'
+import { ReactComponent } from './components/react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
-import { setupHaunted } from './haunted/components/HauntedComponent'
-import './lit/components/LitComponent'
+/* import { setupHaunted } from '../../../src/haunted/components/HauntedComponent'
+import '../../../src/lit/components/LitComponent'
 import SvelteComponent from './svelte/components/SvelteComponent.svelte'
 import { render as renderSolid } from 'solid-js/web'
-import { SolidComponent } from './solid/components/SolidComponent'
+import { SolidComponent } from '../../../src/solid/components/SolidComponent'
 import { createApp as createVueApp } from 'vue'
 // *sigh* do I care enough?
 // @ts-ignore
-import VueComponent from './vue/components/VueComponent.vue'
+import VueComponent from '../../../src/vue/components/VueComponent.vue'
 import { render as renderPreact, html } from 'htm/preact'
-import { PreactComponent } from './preact/components/PreactComponent'
+import { PreactComponent } from '../../../src/preact/components/PreactComponent' */
 
 const createDivAndAppendToBody = (id: string) => {
   const div = document.createElement('div')
@@ -64,7 +64,7 @@ const reactContainer = createDivAndAppendToBody('react-app')
 const root = ReactDOM.createRoot(reactContainer)
 root.render(React.createElement(ReactComponent))
 
-// ============================================================================
+/* // ============================================================================
 // Preact
 // ============================================================================
 const preactContainer = createDivAndAppendToBody('preact-app')
@@ -100,4 +100,4 @@ renderSolid(SolidComponent, solidContainer!)
 // ============================================================================
 // Vue
 // ============================================================================
-createVueApp(VueComponent).mount(createDivAndAppendToBody('vue-app'))
+createVueApp(VueComponent).mount(createDivAndAppendToBody('vue-app')) */

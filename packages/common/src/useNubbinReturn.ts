@@ -1,4 +1,4 @@
-import type { ComputedNubbin, Nubbin } from 'nubbins-core'
+import type { ComputedNubbin, Nubbin } from 'nubbins'
 
 export type useNubbinReturn<T> = T extends Nubbin<infer K>
   ? [K, Nubbin<K>['set']]

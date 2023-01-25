@@ -1,6 +1,6 @@
 import React from 'react'
+import { useNubbin } from 'nubbins-react'
 import { counter } from '../../counter'
-import { useNubbin } from '../useNubbin'
 
 export const CountInput = () => {
   const [count, setCount] = useNubbin(counter)

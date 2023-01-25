@@ -1,4 +1,4 @@
-import { nubbin } from '../packages/core/src'
+import { nubbin } from 'nubbins'
 
 export const counter = nubbin(0)
 
