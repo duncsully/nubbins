@@ -84,7 +84,7 @@ A `useNubbin` hook is provided for each of these libraries. It operates much the
 
 ```typescript
 import { countNubbin } from './countNubbin'
-import { useNubbin } from 'nubbins/react' // use nubbins/haunted or nubbins/preact for their respective versions
+import { useNubbin } from 'nubbins-react' // use nubbins-haunted or nubbins-preact for their respective versions
 
 // ...someComponent
 const [count, setCount] = useNubbin(countNubbin)
@@ -102,7 +102,7 @@ Preact signal support is also provided with the `useNubbinSignal` hook. This all
 
 ```jsx
 import { countNubbin } from './countNubbin'
-import { useNubbinSignal } from 'nubbins/preact'
+import { useNubbinSignal } from 'nubbins-preact'
 
 const SomeComponent = () => {
   const count = useNubbinSignal(countNubbin)
@@ -124,7 +124,7 @@ Solid support is provided via a `nubbinSignal` utility which converts a provided
 
 ```typescript
 import { countNubbin } from './countNubbin'
-import { nubbinSignal } from 'nubbins/solid'
+import { nubbinSignal } from 'nubbins-solid'
 
 const [count, setCount] = nubbinSignal(countNubbin)
 
@@ -142,7 +142,7 @@ A `nubbinRef` utility is provided to transform a nubbin into a Vue ref, which ha
 ```vue
 <script setup>
 import { countNubbin } from './countNubbin'
-import { nubbinRef } from 'nubbins/vue'
+import { nubbinRef } from 'nubbins-vue'
 
 const countRef = nubbinRef(countNubbin)
 
