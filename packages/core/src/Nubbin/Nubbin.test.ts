@@ -1,4 +1,4 @@
-import { ComputedNubbin, nubbin, Nubbin } from './Nubbin'
+import { action, ComputedNubbin, nubbin, Nubbin } from './Nubbin'
 import { describe, it, expect, vi } from 'vitest'
 
 // TODO: More complete tests / better organization? The class split results in mostly
@@ -258,23 +258,45 @@ describe('Nubbin', () => {
 
       expect(subscriber).toHaveBeenCalledTimes(2)
     })
-  })
 
-  it('will not update dependent nubbin if its value after all operations has not changed', () => {
-    const widthNubbin = new Nubbin(1)
-    const heightNubbin = new Nubbin(10)
-    const areaNubbin = new ComputedNubbin(
-      () => widthNubbin.get() * heightNubbin.get()
-    )
-    const subscriber = vi.fn()
-    areaNubbin.observe(subscriber)
+    it('will not update dependent nubbin if its value after all operations has not changed', () => {
+      const widthNubbin = new Nubbin(1)
+      const heightNubbin = new Nubbin(10)
+      const areaNubbin = new ComputedNubbin(
+        () => widthNubbin.get() * heightNubbin.get()
+      )
+      const subscriber = vi.fn()
+      areaNubbin.observe(subscriber)
 
-    ComputedNubbin.action(() => {
-      widthNubbin.set(2)
-      heightNubbin.set(5)
+      ComputedNubbin.action(() => {
+        widthNubbin.set(2)
+        heightNubbin.set(5)
+      })
+
+      expect(subscriber).not.toHaveBeenCalled()
     })
 
-    expect(subscriber).not.toHaveBeenCalled()
+    it('works if dependent nubbin is read during the same action as its dependency', () => {
+      const widthNubbin = new Nubbin(1)
+      const heightNubbin = new Nubbin(10)
+      const areaNubbin = new ComputedNubbin(
+        () => widthNubbin.get() * heightNubbin.get()
+      )
+      const perimeterNubbin = new ComputedNubbin(
+        () => widthNubbin.get() * 2 + heightNubbin.get() * 2
+      )
+      const subscriber = vi.fn()
+      perimeterNubbin.observe(subscriber)
+
+      action(() => {
+        widthNubbin.set(2)
+        expect(areaNubbin.get()).toBe(20)
+        heightNubbin.set(9)
+        expect(areaNubbin.get()).toBe(18)
+      })
+
+      expect(subscriber).not.toHaveBeenCalled()
+    })
   })
 })
 

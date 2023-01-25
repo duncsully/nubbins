@@ -154,6 +154,12 @@ export class Nubbin<T> extends ComputedNubbin<T> {
       this.updateSubscribers(currentValue)
     } else {
       ComputedNubbin.batchedUpdateChecks.add(this)
+      // Mark all dependents as stale so they will be recomputed if they are
+      // read during the action
+      this._dependents.forEach(nubbin => {
+        // @ts-ignore
+        nubbin._stale = true
+      })
     }
   }
 
