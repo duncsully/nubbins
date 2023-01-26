@@ -4,9 +4,9 @@ import { ReactComponent } from './components/react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
 /* import { setupHaunted } from '../../../src/haunted/components/HauntedComponent'
-import '../../../src/lit/components/LitComponent'
-import SvelteComponent from './svelte/components/SvelteComponent.svelte'
-import { render as renderSolid } from 'solid-js/web'
+import '../../../src/lit/components/LitComponent' */
+import SvelteComponent from './components/svelte/SvelteComponent.svelte'
+/* import { render as renderSolid } from 'solid-js/web'
 import { SolidComponent } from '../../../src/solid/components/SolidComponent'
 import { createApp as createVueApp } from 'vue'
 // *sigh* do I care enough?
@@ -59,8 +59,6 @@ setupVanilla()
 // React
 // ============================================================================
 const reactContainer = createDivAndAppendToBody('react-app')
-// TODO: Figure out why type won't work
-// @ts-ignore
 const root = ReactDOM.createRoot(reactContainer)
 root.render(React.createElement(ReactComponent))
 
@@ -83,15 +81,17 @@ createDivAndAppendToBody('haunted-app').append(hauntedComponent)
 // ============================================================================
 const litContainer = createDivAndAppendToBody('lit-app')
 const litComponent = document.createElement('lit-component')
-litContainer?.append(litComponent)
+litContainer?.append(litComponent) */
 
 // ============================================================================
 // Svelte
 // ============================================================================
 const svelteContainer = createDivAndAppendToBody('svelte-app')
-new SvelteComponent({ target: svelteContainer! })
+// TODO: Trading one type mystery for another
+// @ts-ignore
+new SvelteComponent({ target: svelteContainer })
 
-// ============================================================================
+/* // ============================================================================
 // Solid
 // ============================================================================
 const solidContainer = createDivAndAppendToBody('solid-app')

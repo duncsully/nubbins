@@ -9,7 +9,8 @@
         "nubbins": "*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "nubbins-react": "*"
+        "nubbins-react": "*",
+        "svelte": "^3.55.1"
     },
     "devDependencies": {
         "vite": "^4.0.4",
