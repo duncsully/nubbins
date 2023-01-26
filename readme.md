@@ -178,6 +178,45 @@ Conveniently, since nubbins follow the store contract of Svelte, you can use the
 <input bind:value={$countNubbin}>
 ```
 
+### Lit
+
+There are two utilities provided to utilize nubbins in Lit. One option is to use a `NubbinController` which has `get` and `set` methods on it as well as a `value` getter/setter property. Alternatively, if you have decorators enabled, decorate a LitElement property with `nubbinProperty` to get a reactive property directly on the element.
+
+```typescript
+import { html, LitElement } from 'lit'
+import { customElement } from 'lit/decorators.js'
+import { countNubbin } from './countNubbin'
+import { nubbinProperty } from 'nubbins-lit'
+
+@customElement('some-component')
+export class SomeComponent extends LitElement {
+  @nubbinProperty(countNubbin)
+  // Not necessary, but good to infer type based on the nubbin's value
+  count = countNubbin.value
+
+  countController = new NubbinController(this, countNubbin)
+
+  render() {
+    // read
+    let doubled = this.count
+    // or with controller
+    doubled = this.countController.get()
+    return html`
+      <input type="number" .value=${this.count} @input=${this.handleChange} />
+      <p>Doubled: ${doubled}</p>
+    `
+  }
+
+  private handleChange = (e: Event) => {
+    const newValue = (e?.currentTarget as HTMLInputElement).valueAsNumber
+    // write
+    this.count = newValue
+    // or with controller
+    this.countController.set(newValue)
+  }
+}
+```
+
 ## Batching Updates
 
 In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes.

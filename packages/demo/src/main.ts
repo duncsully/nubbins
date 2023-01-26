@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { ReactComponent } from './components/react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
-/* import { setupHaunted } from '../../../src/haunted/components/HauntedComponent'
-import '../../../src/lit/components/LitComponent' */
+//import { setupHaunted } from '../../../src/haunted/components/HauntedComponent'
+import './components/lit/LitComponent'
 import SvelteComponent from './components/svelte/SvelteComponent.svelte'
 /* import { render as renderSolid } from 'solid-js/web'
 import { SolidComponent } from '../../../src/solid/components/SolidComponent'
@@ -74,14 +74,14 @@ renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
 const componentName = 'haunted-component'
 setupHaunted(componentName)
 const hauntedComponent = document.createElement(componentName)
-createDivAndAppendToBody('haunted-app').append(hauntedComponent)
+createDivAndAppendToBody('haunted-app').append(hauntedComponent) */
 
 // ============================================================================
 // Lit
 // ============================================================================
 const litContainer = createDivAndAppendToBody('lit-app')
 const litComponent = document.createElement('lit-component')
-litContainer?.append(litComponent) */
+litContainer?.append(litComponent)
 
 // ============================================================================
 // Svelte

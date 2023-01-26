@@ -1,7 +1,7 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit'
-import { ComputedNubbin, Nubbin } from '../../packages/core/src'
+import { ComputedNubbin, Nubbin } from 'nubbins'
 
-// TODO: Improve ergonomics? Turn into decorator? Make it a reactive property
+// TODO: Test getter/setter
 export class NubbinController<T extends Nubbin<any> | ComputedNubbin<any>>
   implements ReactiveController
 {
@@ -12,7 +12,8 @@ export class NubbinController<T extends Nubbin<any> | ComputedNubbin<any>>
   constructor(public host: ReactiveControllerHost, protected _nubbin: T) {
     host.addController(this)
     this.get = _nubbin.get.bind(_nubbin)
-    if (_nubbin instanceof Nubbin) {
+
+    if ('set' in _nubbin) {
       this.set = _nubbin.set.bind(_nubbin) as T extends Nubbin<infer R>
         ? Nubbin<R>['set']
         : undefined
@@ -22,6 +23,13 @@ export class NubbinController<T extends Nubbin<any> | ComputedNubbin<any>>
         : undefined
     }
     this.requestUpdate = () => this.host.requestUpdate()
+  }
+
+  get value() {
+    return this.get()
+  }
+  set value(newValue: T extends Nubbin<infer R> ? R : never) {
+    this.set?.(newValue)
   }
 
   hostConnected() {
