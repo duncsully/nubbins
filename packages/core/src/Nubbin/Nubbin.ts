@@ -55,7 +55,7 @@ export class ComputedNubbin<T> {
   /**
    * Observes for changes without immediately calling subscriber with current value
    * @param subscriber
-   * @returns
+   * @returns Unsubscribe function
    */
   observe = (subscriber: Subscriber<T>) => {
     this._subscribers.add(subscriber)
@@ -71,7 +71,7 @@ export class ComputedNubbin<T> {
   /**
    * Observes for changes and immediately calls subscriber with current value
    * @param subscriber
-   * @returns
+   * @returns Unsubscribe function
    */
   subscribe = (subscriber: Subscriber<T>) => {
     subscriber(this._value)
