@@ -1,6 +1,6 @@
 import { html, virtual } from 'haunted'
 import { counter } from '../../counter'
-import { useNubbin } from '../useNubbin'
+import { useNubbin } from 'nubbins-haunted'
 
 export const CountInput = virtual(() => {
   const [count, setCount] = useNubbin(counter)

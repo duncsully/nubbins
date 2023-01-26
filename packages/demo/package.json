@@ -12,7 +12,9 @@
         "nubbins-react": "*",
         "svelte": "^3.55.1",
         "lit": "^2.6.1",
-        "nubbins-lit": "*"
+        "nubbins-lit": "*",
+        "haunted": "^5.0.0",
+        "nubbins-haunted": "*"
     },
     "devDependencies": {
         "vite": "^4.0.4",

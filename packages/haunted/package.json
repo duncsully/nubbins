@@ -1,0 +1,38 @@
+{
+    "name": "nubbins-haunted",
+    "version": "0.0.0",
+    "description": "Atomic state management library for Haunted.",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "nubbins": "*",
+        "nubbins-common": "*"
+    },
+    "peerDependencies": {
+        "nubbins": "^0.0.0",
+        "haunted": "^5.0.0"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/duncsully/nubbins.git"
+    },
+    "keywords": [
+        "atomic",
+        "state"
+    ],
+    "author": "DuncSully",
+    "license": "MIT"
+}

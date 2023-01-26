@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { ReactComponent } from './components/react/ReactComponent'
 import React from 'react'
 import { counter, doubled } from './counter'
-//import { setupHaunted } from '../../../src/haunted/components/HauntedComponent'
+import { setupHaunted } from './components/haunted/HauntedComponent'
 import './components/lit/LitComponent'
 import SvelteComponent from './components/svelte/SvelteComponent.svelte'
 /* import { render as renderSolid } from 'solid-js/web'
@@ -62,11 +62,11 @@ const reactContainer = createDivAndAppendToBody('react-app')
 const root = ReactDOM.createRoot(reactContainer)
 root.render(React.createElement(ReactComponent))
 
-/* // ============================================================================
+// ============================================================================
 // Preact
 // ============================================================================
-const preactContainer = createDivAndAppendToBody('preact-app')
-renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
+/* const preactContainer = createDivAndAppendToBody('preact-app')
+renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement) */
 
 // ============================================================================
 // Haunted
@@ -74,7 +74,7 @@ renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement)
 const componentName = 'haunted-component'
 setupHaunted(componentName)
 const hauntedComponent = document.createElement(componentName)
-createDivAndAppendToBody('haunted-app').append(hauntedComponent) */
+createDivAndAppendToBody('haunted-app').append(hauntedComponent)
 
 // ============================================================================
 // Lit

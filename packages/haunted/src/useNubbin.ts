@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'haunted'
-import { useNubbinReturn } from '../../packages/common/src'
-import { Nubbin, ComputedNubbin } from '../../packages/core/src'
+import { useNubbinReturn } from 'nubbins-common'
+import { Nubbin, ComputedNubbin } from 'nubbins'
 
 export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   nubbin: T
@@ -10,6 +10,6 @@ export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   useEffect(() => nubbin.observe(rerender), [nubbin])
 
   return (
-    nubbin instanceof Nubbin ? [nubbin.get(), nubbin.set] : [nubbin.get()]
+    'set' in nubbin ? [nubbin.get(), nubbin.set] : [nubbin.get()]
   ) as useNubbinReturn<T>
 }
