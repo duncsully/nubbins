@@ -1,6 +1,6 @@
-import { html } from 'htm/preact'
+/** @jsxImportSource preact */
 import { counter } from '../../counter'
-import { useNubbinSignal } from '../useNubbinSignal'
+import { useNubbinSignal } from 'nubbins-preact'
 
 export const CountInput = () => {
   const count = useNubbinSignal(counter)
@@ -8,5 +8,5 @@ export const CountInput = () => {
   const handleChange = (e: Event) =>
     (count.value = (e?.currentTarget as HTMLInputElement).valueAsNumber)
 
-  return html`<input type="number" value=${count} onInput=${handleChange} />`
+  return <input type="number" value={count} onInput={handleChange} />
 }

@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'preact/hooks'
-import { useNubbinReturn } from '../../packages/common/src'
-import { ComputedNubbin, Nubbin } from '../../packages/core/src'
+import { useNubbinReturn } from 'nubbins-common'
+import { ComputedNubbin, Nubbin } from 'nubbins'
 
 export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   nubbin: T
@@ -10,7 +10,7 @@ export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   useEffect(() => nubbin.observe(rerender), [nubbin])
 
   return (
-    nubbin instanceof Nubbin
+    'set' in nubbin
       ? ([nubbin.get(), nubbin.set] as const)
       : ([nubbin.get()] as const)
   ) as useNubbinReturn<T>

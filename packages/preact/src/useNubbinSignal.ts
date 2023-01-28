@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from '../../packages/core/src'
+import { ComputedNubbin, Nubbin } from 'nubbins'
 import { effect, Signal, ReadonlySignal, useSignal } from '@preact/signals'
 import { useCallback, useEffect } from 'preact/hooks'
 
@@ -6,7 +6,7 @@ export const useNubbinSignal = <T extends ComputedNubbin<any> | Nubbin<any>>(
   nubbin: T
 ) => {
   type Value = T['value']
-  const writeable = nubbin instanceof Nubbin
+  const writeable = 'set' in nubbin
   const signal = useSignal(nubbin.get())
   const updateSignal = useCallback((value: Value) => (signal.value = value), [])
 

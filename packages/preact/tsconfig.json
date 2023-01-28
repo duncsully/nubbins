@@ -6,6 +6,5 @@
       "paths": {
         "src/*": ["./src/*"]
       },
-      "jsx": "react-jsx",
     }
   }

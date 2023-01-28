@@ -1,13 +1,13 @@
-import { html } from 'htm/preact'
+/** @jsxImportSource preact */
 import { CountInput } from './CountInput'
 import { Doubled } from './Doubled'
 
 export const PreactComponent = () => {
-  return html`
+  return (
     <section>
       <h2>Preact</h2>
-      <${CountInput} />
-      <${Doubled} />
+      <CountInput />
+      <Doubled />
     </section>
-  `
+  )
 }

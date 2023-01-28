@@ -1,0 +1,38 @@
+{
+    "name": "nubbins-preact",
+    "version": "0.0.0",
+    "description": "Atomic state management library for Preact",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "devDependencies": {
+        "nubbins-common": "*",
+        "nubbins": "*"
+    },
+    "peerDependencies": {
+        "preact": ">=10.11.3",
+        "@preact/signals": "^1.1.3",
+        "nubbins": "^0.0.0"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/duncsully/nubbins.git"
+    },
+    "keywords": [
+        "atomic",
+        "state"
+    ],
+    "author": "DuncSully",
+    "license": "MIT"
+}

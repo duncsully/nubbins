@@ -14,7 +14,10 @@
         "lit": "^2.6.1",
         "nubbins-lit": "*",
         "haunted": "^5.0.0",
-        "nubbins-haunted": "*"
+        "nubbins-haunted": "*",
+        "nubbins-preact": "*",
+        "preact": "^10.11.3",
+        "@preact/signals": "^1.1.3"
     },
     "devDependencies": {
         "vite": "^4.0.4",

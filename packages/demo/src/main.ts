@@ -6,14 +6,13 @@ import { counter, doubled } from './counter'
 import { setupHaunted } from './components/haunted/HauntedComponent'
 import './components/lit/LitComponent'
 import SvelteComponent from './components/svelte/SvelteComponent.svelte'
-/* import { render as renderSolid } from 'solid-js/web'
-import { SolidComponent } from '../../../src/solid/components/SolidComponent'
-import { createApp as createVueApp } from 'vue'
-// *sigh* do I care enough?
-// @ts-ignore
-import VueComponent from '../../../src/vue/components/VueComponent.vue'
-import { render as renderPreact, html } from 'htm/preact'
-import { PreactComponent } from '../../../src/preact/components/PreactComponent' */
+import { renderPreact } from './components/preact/renderPreact'
+// import { render as renderSolid } from 'solid-js/web'
+// import { SolidComponent } from '../../../src/solid/components/SolidComponent'
+// import { createApp as createVueApp } from 'vue'
+// // *sigh* do I care enough?
+// // @ts-ignore
+// import VueComponent from '../../../src/vue/components/VueComponent.vue'
 
 const createDivAndAppendToBody = (id: string) => {
   const div = document.createElement('div')
@@ -65,8 +64,7 @@ root.render(React.createElement(ReactComponent))
 // ============================================================================
 // Preact
 // ============================================================================
-/* const preactContainer = createDivAndAppendToBody('preact-app')
-renderPreact(html`<${PreactComponent} />`, preactContainer as HTMLElement) */
+renderPreact()
 
 // ============================================================================
 // Haunted
