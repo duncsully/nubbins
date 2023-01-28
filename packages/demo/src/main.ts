@@ -6,12 +6,7 @@ import { renderHaunted } from './components/haunted/renderHaunted'
 import { renderLit } from './components/lit/renderLit'
 import { renderSvelte } from './components/svelte/renderSvelte'
 import { renderVue } from './components/vue/renderVue'
-// import { render as renderSolid } from 'solid-js/web'
-// import { SolidComponent } from '../../../src/solid/components/SolidComponent'
-// import { createApp as createVueApp } from 'vue'
-// // *sigh* do I care enough?
-// // @ts-ignore
-// import VueComponent from '../../../src/vue/components/VueComponent.vue'
+import { renderSolid } from './components/solid/renderSolid'
 
 renderVanilla()
 renderReact()
@@ -19,10 +14,5 @@ renderPreact()
 renderHaunted()
 renderLit()
 renderSvelte()
-
+renderSolid()
 renderVue()
-/* // ============================================================================
-// Solid
-// ============================================================================
-const solidContainer = createDivAndAppendToBody('solid-app')
-renderSolid(SolidComponent, solidContainer!) */

@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from '../../packages/core/src'
+import { ComputedNubbin, Nubbin } from 'nubbins'
 import { from } from 'solid-js'
 
 export const nubbinSignal = <T extends Nubbin<any> | ComputedNubbin<any>>(
@@ -6,7 +6,7 @@ export const nubbinSignal = <T extends Nubbin<any> | ComputedNubbin<any>>(
 ) => {
   const signal = from(nubbin)
   return (
-    nubbin instanceof Nubbin ? [signal, nubbin.set] : [signal]
+    'set' in nubbin ? [signal, nubbin.set] : [signal]
   ) as T extends Nubbin<infer K>
     ? [Nubbin<K>['get'], Nubbin<K>['set']]
     : T extends ComputedNubbin<infer K>

@@ -1,5 +1,5 @@
 import { counter } from '../../counter'
-import { nubbinSignal } from '../nubbinSignal'
+import { nubbinSignal } from 'nubbins-solid'
 import html from 'solid-js/html'
 
 export const CountInput = () => {
