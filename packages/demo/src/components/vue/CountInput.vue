@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { nubbinRef } from '../nubbinRef'
+  import { nubbinRef } from 'nubbins-vue'
   import { counter } from '../../counter'
 
   const count = nubbinRef(counter)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { doubled } from '../../counter'
-  import { nubbinRef } from '../nubbinRef'
+  import { nubbinRef } from 'nubbins-vue'
     
   const double = nubbinRef(doubled)
 </script>
