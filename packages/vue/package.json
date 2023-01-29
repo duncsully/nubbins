@@ -1,6 +1,6 @@
 {
     "name": "@nubbins/vue",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Nubbins helpers for Vue.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -17,7 +17,7 @@
         "@nubbins/core": "*"
     },
     "peerDependencies": {
-        "@nubbins/core": "^0.0.0",
+        "@nubbins/core": "^0.1.0",
         "vue": ">=3.2.0"
     },
     "scripts": {

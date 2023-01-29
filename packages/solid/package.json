@@ -1,6 +1,6 @@
 {
     "name": "@nubbins/solid",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Nubbins helpers for Solid.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -17,7 +17,7 @@
         "@nubbins/core": "*"
     },
     "peerDependencies": {
-        "@nubbins/core": "^0.0.0",
+        "@nubbins/core": "^0.1.0",
         "solid-js": ">=1.6.0"
     },
     "scripts": {

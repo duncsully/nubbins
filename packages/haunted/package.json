@@ -1,6 +1,6 @@
 {
     "name": "@nubbins/haunted",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Nubbins helpers for Haunted.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -18,7 +18,7 @@
         "nubbins-common": "*"
     },
     "peerDependencies": {
-        "@nubbins/core": "^0.0.0",
+        "@nubbins/core": "^0.1.0",
         "haunted": ">=5.0.0"
     },
     "scripts": {

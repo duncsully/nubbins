@@ -1,6 +1,6 @@
 {
     "name": "@nubbins/core",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Framework-agnostic atomic state management library.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -13,8 +13,7 @@
         }
     },
     "dependencies": {},
-    "devDependencies": {
-    },
+    "devDependencies": {},
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",

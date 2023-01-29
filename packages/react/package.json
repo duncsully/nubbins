@@ -1,6 +1,6 @@
 {
     "name": "@nubbins/react",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Nubbins helpers for React",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -23,7 +23,7 @@
     },
     "peerDependencies": {
         "react": ">=16.8.0",
-        "@nubbins/core": "^0.0.0"
+        "@nubbins/core": "^0.1.0"
     },
     "scripts": {
         "build": "tsup",
