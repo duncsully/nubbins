@@ -1,6 +1,6 @@
 import { html, virtual } from 'haunted'
 import { doubled } from '../../counter'
-import { useNubbin } from 'nubbins-haunted'
+import { useNubbin } from '@nubbins/haunted'
 
 export const Doubled = virtual(() => {
   const [double] = useNubbin(doubled)

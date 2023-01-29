@@ -1,5 +1,5 @@
 {
-    "name": "nubbins",
+    "name": "@nubbins/core",
     "version": "0.0.0",
     "description": "Framework-agnostic atomic state management library.",
     "main": "./dist/index.js",

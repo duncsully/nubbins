@@ -1,6 +1,6 @@
 /** @jsxImportSource preact */
 import { counter } from '../../counter'
-import { useNubbinSignal } from 'nubbins-preact'
+import { useNubbinSignal } from '@nubbins/preact'
 
 export const CountInput = () => {
   const count = useNubbinSignal(counter)

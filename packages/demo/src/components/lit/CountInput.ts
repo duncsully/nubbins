@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { counter } from '../../counter'
-import { nubbinProperty } from 'nubbins-lit'
+import { nubbinProperty } from '@nubbins/lit'
 
 @customElement('lit-count-input')
 export class CountInput extends LitElement {

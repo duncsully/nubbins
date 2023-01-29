@@ -1,7 +1,7 @@
 {
-    "name": "nubbins-preact",
+    "name": "@nubbins/preact",
     "version": "0.0.0",
-    "description": "Atomic state management library for Preact",
+    "description": "Nubbins helpers for Preact",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -14,12 +14,12 @@
     },
     "devDependencies": {
         "nubbins-common": "*",
-        "nubbins": "*"
+        "@nubbins/core": "*"
     },
     "peerDependencies": {
         "preact": ">=10.11.0",
         "@preact/signals": ">=1.1.0",
-        "nubbins": "^0.0.0"
+        "@nubbins/core": "^0.0.0"
     },
     "scripts": {
         "build": "tsup",

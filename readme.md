@@ -84,7 +84,7 @@ A `useNubbin` hook is provided for each of these libraries. It operates much the
 
 ```typescript
 import { countNubbin } from './countNubbin'
-import { useNubbin } from 'nubbins-react' // use nubbins-haunted or nubbins-preact for their respective versions
+import { useNubbin } from '@nubbins/react' // use @nubbins/haunted or @nubbins/preact for their respective versions
 
 // ...someComponent
 const [count, setCount] = useNubbin(countNubbin)
@@ -102,7 +102,7 @@ Preact signal support is also provided with the `useNubbinSignal` hook. This all
 
 ```jsx
 import { countNubbin } from './countNubbin'
-import { useNubbinSignal } from 'nubbins-preact'
+import { useNubbinSignal } from '@nubbins/preact'
 
 const SomeComponent = () => {
   const count = useNubbinSignal(countNubbin)
@@ -124,7 +124,7 @@ Solid support is provided via a `nubbinSignal` utility which converts a provided
 
 ```typescript
 import { countNubbin } from './countNubbin'
-import { nubbinSignal } from 'nubbins-solid'
+import { nubbinSignal } from '@nubbins/solid'
 
 const [count, setCount] = nubbinSignal(countNubbin)
 
@@ -142,7 +142,7 @@ A `nubbinRef` utility is provided to transform a nubbin into a Vue ref, which ha
 ```vue
 <script setup>
 import { countNubbin } from './countNubbin'
-import { nubbinRef } from 'nubbins-vue'
+import { nubbinRef } from '@nubbins/vue'
 
 const countRef = nubbinRef(countNubbin)
 
@@ -186,7 +186,7 @@ There are two utilities provided to utilize nubbins in Lit. One option is to use
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { countNubbin } from './countNubbin'
-import { nubbinProperty } from 'nubbins-lit'
+import { nubbinProperty } from '@nubbins/lit'
 
 @customElement('some-component')
 export class SomeComponent extends LitElement {
@@ -222,7 +222,7 @@ export class SomeComponent extends LitElement {
 In cases where you're setting multiple nubbins at a time, it's highly recommended to wrap your updates in `action` to reduce unnecessary updates to subscribers. This is especially useful for more complex computed nubbins. You can nest actions and the updates won't be made until the top-level action finishes.
 
 ```typescript
-import { nubbin, action } from 'nubbins'
+import { nubbin, action } from '@nubbins/core'
 
 const width = nubbin(1)
 const length = nubbin(20)

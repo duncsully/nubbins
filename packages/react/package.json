@@ -1,7 +1,7 @@
 {
-    "name": "nubbins-react",
+    "name": "@nubbins/react",
     "version": "0.0.0",
-    "description": "Atomic state management library for React",
+    "description": "Nubbins helpers for React",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -17,13 +17,13 @@
     },
     "devDependencies": {
         "nubbins-common": "*",
-        "nubbins": "*",
+        "@nubbins/core": "*",
         "@types/react": "^18.0.27",
         "@types/react-dom": "^18.0.10"
     },
     "peerDependencies": {
         "react": ">=16.8.0",
-        "nubbins": "^0.0.0"
+        "@nubbins/core": "^0.0.0"
     },
     "scripts": {
         "build": "tsup",

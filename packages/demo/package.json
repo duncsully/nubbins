@@ -6,21 +6,21 @@
     "type": "module",
     
     "dependencies": {
-        "nubbins": "*",
+        "@nubbins/core": "*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "nubbins-react": "*",
+        "@nubbins/react": "*",
         "svelte": "^3.55.1",
         "lit": "^2.6.1",
-        "nubbins-lit": "*",
+        "@nubbins/lit": "*",
         "haunted": "^5.0.0",
-        "nubbins-haunted": "*",
-        "nubbins-preact": "*",
+        "@nubbins/haunted": "*",
+        "@nubbins/preact": "*",
         "preact": "^10.11.3",
         "@preact/signals": "^1.1.3",
-        "nubbins-vue": "*",
+        "@nubbins/vue": "*",
         "vue": "^3.2.45",
-        "nubbins-solid": "*",
+        "@nubbins/solid": "*",
         "solid-js": "^1.6.9"
     },
     "devDependencies": {

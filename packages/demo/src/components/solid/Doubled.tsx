@@ -1,5 +1,5 @@
 import { doubled } from '../../counter'
-import { nubbinSignal } from 'nubbins-solid'
+import { nubbinSignal } from '@nubbins/solid'
 import html from 'solid-js/html'
 
 export const Doubled = () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNubbin } from 'nubbins-react'
+import { useNubbin } from '@nubbins/react'
 import { counter } from '../../counter'
 
 export const CountInput = () => {

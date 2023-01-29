@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from 'nubbins'
+import { ComputedNubbin, Nubbin } from '@nubbins/core'
 import { from } from 'solid-js'
 
 export const nubbinSignal = <T extends Nubbin<any> | ComputedNubbin<any>>(

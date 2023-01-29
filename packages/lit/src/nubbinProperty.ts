@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from 'nubbins'
+import { ComputedNubbin, Nubbin } from '@nubbins/core'
 import { ReactiveElement } from 'lit'
 
 // TODO: Robust enough? Any usability enhancements?

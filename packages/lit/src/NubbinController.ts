@@ -1,5 +1,5 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit'
-import { ComputedNubbin, Nubbin } from 'nubbins'
+import { ComputedNubbin, Nubbin } from '@nubbins/core'
 
 // TODO: Test getter/setter
 export class NubbinController<T extends Nubbin<any> | ComputedNubbin<any>>

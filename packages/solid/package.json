@@ -1,7 +1,7 @@
 {
-    "name": "nubbins-solid",
+    "name": "@nubbins/solid",
     "version": "0.0.0",
-    "description": "Atomic state management library for Solid.",
+    "description": "Nubbins helpers for Solid.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -14,10 +14,10 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "nubbins": "*"
+        "@nubbins/core": "*"
     },
     "peerDependencies": {
-        "nubbins": "^0.0.0",
+        "@nubbins/core": "^0.0.0",
         "solid-js": ">=1.6.0"
     },
     "scripts": {

@@ -1,4 +1,4 @@
-import { ComputedNubbin, Nubbin } from 'nubbins'
+import { ComputedNubbin, Nubbin } from '@nubbins/core'
 import { customRef, Ref } from 'vue'
 
 export const nubbinRef = <T extends Nubbin<any> | ComputedNubbin<any>>(

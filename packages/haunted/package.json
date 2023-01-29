@@ -1,7 +1,7 @@
 {
-    "name": "nubbins-haunted",
+    "name": "@nubbins/haunted",
     "version": "0.0.0",
-    "description": "Atomic state management library for Haunted.",
+    "description": "Nubbins helpers for Haunted.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -14,11 +14,11 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "nubbins": "*",
+        "@nubbins/core": "*",
         "nubbins-common": "*"
     },
     "peerDependencies": {
-        "nubbins": "^0.0.0",
+        "@nubbins/core": "^0.0.0",
         "haunted": ">=5.0.0"
     },
     "scripts": {

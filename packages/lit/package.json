@@ -1,7 +1,7 @@
 {
-    "name": "nubbins-lit",
+    "name": "@nubbins/lit",
     "version": "0.0.0",
-    "description": "Atomic state management library for Lit.",
+    "description": "Nubbins helpers for Lit.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -14,10 +14,10 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "nubbins": "*"
+        "@nubbins/core": "*"
     },
     "peerDependencies": {
-        "nubbins": "^0.0.0",
+        "@nubbins/core": "^0.0.0",
         "lit": ">=2.6.0"
     },
     "scripts": {

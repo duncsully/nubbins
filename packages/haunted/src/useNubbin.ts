@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'haunted'
 import { useNubbinReturn } from 'nubbins-common'
-import { Nubbin, ComputedNubbin } from 'nubbins'
+import { Nubbin, ComputedNubbin } from '@nubbins/core'
 
 export const useNubbin = <T extends Nubbin<any> | ComputedNubbin<any>>(
   nubbin: T
