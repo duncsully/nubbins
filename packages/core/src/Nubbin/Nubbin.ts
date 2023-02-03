@@ -2,8 +2,6 @@ import { notEqual } from '../utils'
 import { NubbinOptions } from './NubbinOptions'
 import { Subscriber } from './Subscriber'
 
-// TODO: Implement valueOf? Would technically allow direct use of number nubbins (numbins?) without .get() or .value
-
 /**
  * An atomic state piece that allows subscribing to changes and tracks
  * dependent Nubbins
@@ -129,6 +127,13 @@ export class ComputedNubbin<T> {
     updates.forEach(update => update())
   }
 
+  protected setDependentsStale() {
+    this._dependents.forEach(dependent => {
+      dependent._stale = true
+      dependent.setDependentsStale()
+    })
+  }
+
   protected getLatestValue() {
     if (this.getter) {
       ComputedNubbin.context.push(this)
@@ -154,12 +159,8 @@ export class Nubbin<T> extends ComputedNubbin<T> {
       this.updateSubscribers(currentValue)
     } else {
       ComputedNubbin.batchedUpdateChecks.add(this)
-      // Mark all dependents as stale so they will be recomputed if they are
-      // read during the action
-      this._dependents.forEach(nubbin => {
-        // @ts-ignore
-        nubbin._stale = true
-      })
+      // Mark all dependents as stale so they will be recomputed as needed
+      this.setDependentsStale()
     }
   }
 

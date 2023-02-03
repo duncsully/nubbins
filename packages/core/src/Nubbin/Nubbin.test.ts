@@ -276,23 +276,26 @@ describe('Nubbin', () => {
       expect(subscriber).not.toHaveBeenCalled()
     })
 
-    it('works if dependent nubbin is read during the same action as its dependency', () => {
+    it('works if dependent nubbin is read during the same action any of its dependencies are updated in', () => {
       const widthNubbin = new Nubbin(1)
-      const heightNubbin = new Nubbin(10)
+      const lengthNubbin = new Nubbin(10)
       const areaNubbin = new ComputedNubbin(
-        () => widthNubbin.get() * heightNubbin.get()
+        () => widthNubbin.get() * lengthNubbin.get()
       )
       const perimeterNubbin = new ComputedNubbin(
-        () => widthNubbin.get() * 2 + heightNubbin.get() * 2
+        () => widthNubbin.get() * 2 + lengthNubbin.get() * 2
+      )
+      const heightNubbin = new Nubbin(2)
+      const volumeNubbin = new ComputedNubbin(
+        () => areaNubbin.get() * heightNubbin.get()
       )
       const subscriber = vi.fn()
       perimeterNubbin.observe(subscriber)
 
       action(() => {
         widthNubbin.set(2)
-        expect(areaNubbin.get()).toBe(20)
-        heightNubbin.set(9)
-        expect(areaNubbin.get()).toBe(18)
+        expect(volumeNubbin.get()).toBe(40)
+        lengthNubbin.set(9)
       })
 
       expect(subscriber).not.toHaveBeenCalled()
