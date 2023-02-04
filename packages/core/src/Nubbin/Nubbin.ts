@@ -34,7 +34,7 @@ export class ComputedNubbin<T> {
     protected _options: NubbinOptions<T> = {}
   ) {
     // Need to compute the initial value to build the dependency graph
-    this.getLatestValue()
+    this.computeValue()
   }
 
   get value() {
@@ -45,7 +45,7 @@ export class ComputedNubbin<T> {
     const caller = ComputedNubbin.context.at(-1)
     if (caller) this._dependents.add(caller)
     if (this._stale) {
-      this.getLatestValue()
+      this.computeValue()
     }
     return this._value
   }
@@ -61,7 +61,7 @@ export class ComputedNubbin<T> {
     // due to no subscriptions prompting the value to be recomputed
     // This subscriber needs to be updated if those new dependencies get updated
     if (this._stale) {
-      this.getLatestValue()
+      this.computeValue()
     }
     return () => this.unsubscribe(subscriber)
   }
@@ -111,7 +111,7 @@ export class ComputedNubbin<T> {
 
     if (this._subscribers.size) {
       const oldValue = this._value
-      this.getLatestValue()
+      this.computeValue()
       // Writable nubbin will already have had its previous and new value checked
       if (isTop || hasChanged(oldValue, this._value)) {
         this._subscribers.forEach(subscriber =>
@@ -141,7 +141,7 @@ export class ComputedNubbin<T> {
     })
   }
 
-  protected getLatestValue() {
+  protected computeValue() {
     if (this.getter) {
       ComputedNubbin.context.push(this)
       this._value = this.getter()
