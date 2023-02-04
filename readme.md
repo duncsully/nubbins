@@ -242,6 +242,25 @@ action(() => {
 // Since area is still 20 after the action completed, area's subscribers won't be updated
 ```
 
+## Options
+
+An options object can be passed as the second argument to the `nubbin` function. The following options are available:
+
+### hasChanged
+
+By default, nubbins will only notify subscribers if the new value is different from the previous value. This is done by comparing the new value to the previous value using the `Object.is` algorithm. This means that arrays and objects will check for referential equality and won't update when using methods like `Array.prototype.push`. If you want to customize this behavior, you can pass a custom `hasChanged` function to the `nubbin` function.
+
+```typescript
+import { nubbin } from '@nubbins/core'
+
+const arrayNubbin = nubbin([1, 2, 3], {
+  // When getting a new array reference, compare each value to see if any are different
+  hasChanged: (a, b) => a.some((value, i) => value !== b[i]),
+})
+
+arrayNubbin.set([1, 2, 3]) // won't notify subscribers
+```
+
 ## .get() and .set() vs .value
 
 [](#methods-vs-property)To provide an API that is familiar across various FE libraries, nubbin objects have both a pair of `.get()` and `.set()` methods and also a `.value` getter-setter that aliases the `.get()` and `.set()` methods. The methods probably look familiar to users of Svelte stores and, to a lesser extent, Solid signals, while the `.value` property probably looks more familiar to users of Vue refs and Preact signals.
