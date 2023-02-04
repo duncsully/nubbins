@@ -31,7 +31,7 @@ export class ComputedNubbin<T> {
 
   constructor(
     protected getter?: () => T,
-    private _options: NubbinOptions<T> = {}
+    protected _options: NubbinOptions<T> = {}
   ) {
     // Need to compute the initial value to build the dependency graph
     this.getLatestValue()
@@ -99,14 +99,21 @@ export class ComputedNubbin<T> {
 
   protected _subscribers = new Set<Subscriber<T>>()
 
-  protected getAllUpdates = (previousValueTop?: T) => {
+  /**
+   * Recurse the dependency graph to get all updates that need to be run
+   * @param isTop Whether this is the top level call, if so, we don't need to
+   * check if the value has changed
+   * @returns
+   */
+  protected getAllUpdates = (isTop?: boolean) => {
     const { hasChanged = notEqual } = this._options
     const allSubscribers: (() => void)[] = []
 
     if (this._subscribers.size) {
-      const oldValue = this.getter ? this._value : previousValueTop
+      const oldValue = this._value
       this.getLatestValue()
-      if (hasChanged(oldValue, this._value)) {
+      // Writable nubbin will already have had its previous and new value checked
+      if (isTop || hasChanged(oldValue, this._value)) {
         this._subscribers.forEach(subscriber =>
           allSubscribers.push(() => subscriber(this._value))
         )
@@ -122,8 +129,8 @@ export class ComputedNubbin<T> {
     return allSubscribers
   }
 
-  protected updateSubscribers(previousValueTop?: T) {
-    const updates = this.getAllUpdates(previousValueTop)
+  protected updateSubscribers() {
+    const updates = this.getAllUpdates(true)
     updates.forEach(update => update())
   }
 
@@ -154,9 +161,12 @@ export class Nubbin<T> extends ComputedNubbin<T> {
     const currentValue = this._value
     const newValue = value instanceof Function ? value(currentValue) : value
     this._value = newValue
+    const { hasChanged = notEqual } = this._options
+
+    if (!hasChanged(currentValue, newValue)) return
 
     if (!ComputedNubbin.batchedUpdateChecks) {
-      this.updateSubscribers(currentValue)
+      this.updateSubscribers()
     } else {
       ComputedNubbin.batchedUpdateChecks.add(this)
       // Mark all dependents as stale so they will be recomputed as needed

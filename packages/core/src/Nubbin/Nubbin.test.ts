@@ -259,7 +259,24 @@ describe('Nubbin', () => {
       expect(subscriber).toHaveBeenCalledTimes(2)
     })
 
-    it('will not update dependent nubbin if its value after all operations has not changed', () => {
+    it('does not recompute computed nubbins if dependencies not updated', () => {
+      const widthNubbin = new Nubbin(1)
+      const lengthNubbin = new Nubbin(10)
+      const getterCheck = vi.fn(() => widthNubbin.get() * lengthNubbin.get())
+      const areaNubbin = new ComputedNubbin(getterCheck)
+      getterCheck.mockClear()
+
+      action(() => {
+        widthNubbin.set(1)
+        lengthNubbin.set(10)
+      })
+
+      areaNubbin.get()
+
+      expect(getterCheck).not.toHaveBeenCalled()
+    })
+
+    it('will not update dependent nubbin subscribers if its value after all operations has not changed', () => {
       const widthNubbin = new Nubbin(1)
       const heightNubbin = new Nubbin(10)
       const areaNubbin = new ComputedNubbin(
