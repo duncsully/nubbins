@@ -55,6 +55,18 @@ export const countNubbin = nubbin(0)
 export const doubledNubbin = nubbin(() => countNubbin.get() * 2)
 ```
 
+### Internally set nubbins
+
+You can combine writable and readonly nubbins to create a nubbin that is writable internally but readonly externally. This is useful for syncing state with external sources, such as a server.
+
+```typescript
+const internalNubbin = nubbin(0)
+someExternalSource.subscribe(value => {
+  internalNubbin.set(value)
+})
+export const externalNubbin = nubbin(() => internalNubbin.get())
+```
+
 ## Nubbin stores
 
 Creating and organizing numerous nubbins can get tedious. For convenience, you can create multiple nubbins with `nubbinStore` and either leave them grouped together in a store or destructure them into individual nubbins.
@@ -198,9 +210,9 @@ export class SomeComponent extends LitElement {
 
   render() {
     // read
-    let doubled = this.count
+    let doubled = this.count * 2
     // or with controller
-    doubled = this.countController.get()
+    doubled = this.countController.get() * 2
     return html`
       <input type="number" .value=${this.count} @input=${this.handleChange} />
       <p>Doubled: ${doubled}</p>
